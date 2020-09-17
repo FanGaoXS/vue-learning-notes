@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue.js的生命周期</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">{{message}}</div>
+<script>
+    let app = new Vue({
+        //绑定上文的元素
+        el: '#app',
+        //定义数据
+        data: {
+           message: 'Hello,Vue.js!'
+        },
+        //定义方法
+        methods:{
+
+        },
+        //生命周期函数：created（Vue实例被创建后运行的函数）
+        created:function () {
+            console.log('lifeCycle--->created函数执行');
+        },
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-for遍历对象中的属性</title>
+</head>
+<body>
+
+<div id="app">
+  <!--遍历value-->
+  <ul>
+    <li v-for="item in student">{{item}}</li>
+  </ul>
+  <!--遍历key-value-->
+  <ul>
+    <li v-for="(value,key) in student">{{key}}--{{value}}</li>
+  </ul>
+  <!--遍历key-value和下标-->
+  <ul>
+    <li v-for="(value,key,index) in student">{{index}}--{{key}}--{{value}}</li>
+  </ul>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      //student对象
+      student:{
+        id:10001,
+        name:'张三',
+        age:18,
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

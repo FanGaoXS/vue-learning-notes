@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>input会造成复用的问题</title>
+</head>
+<body>
+
+<div id="app">
+  <span v-if="isUserName">
+    <label for="username">用户账号</label>
+    <input type="text" id="username" placeholder="请在这里输入你的用户账号" key="username">
+  </span>
+  <span v-else>
+    <label for="email">用户邮箱</label>
+    <input type="text" id="email" placeholder="请在这里输入你的用户邮箱" key="email">
+  </span>
+  <button @click="changeLoginType">切换登录方式</button>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      isUserName: true
+    },
+    methods: {
+      //切换登录方式
+      changeLoginType() {
+        this.isUserName=!this.isUserName;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

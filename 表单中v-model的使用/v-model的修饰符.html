@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>v-model的修饰符</title>
+</head>
+<body>
+
+<div id="app">
+  <!--1、lazy修饰符（懒加载）-->
+  <input type="text" v-model.lazy="message">
+  <h3>你输入的内容是：{{message}}</h3>
+  <!--2、number修饰符（强制转换为数值类型）-->
+  <input type="number" v-model.number="number">
+  <h3>你输入的{{number}}是{{typeof number}}类型</h3>
+  <!--3、trim修饰符（字符串前后去空格）-->
+  <input type="text" v-model="message">
+  <h3>你输入的内容是：{{message}}</h3>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: '',
+      number:0,
+    },
+  });
+</script>
+
+</body>
+</html>

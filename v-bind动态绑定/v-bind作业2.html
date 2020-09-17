@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind作业2</title>
+  <style>
+    .active{
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <ul>
+    <li v-for="(movie,index) in movies" v-on:click="getClick(index)" v-bind:class="index==getClick(index)?'active':''">{{movie}}--{{index}}</li>
+  </ul>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      movies: ['钢铁侠1','钢铁侠2','钢铁侠3','复仇者联盟1'],
+    },
+    methods: {
+      getClick(index) {
+        console.log(index);
+        return index;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

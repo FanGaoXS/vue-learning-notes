@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>组件化开发模板分离写法</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn></cpn>
+</div>
+
+<template id="cpn">
+  <div>
+    <h2>我是标题</h2>
+    <h3>我是内容</h3>
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //创建组件构造器
+  let cpnConstructor = Vue.extend({
+    template:'#cpn'
+  });
+
+  //注册组件为全局组件
+  Vue.component('cpn',cpnConstructor);
+
+  let app = new Vue({
+    el: '#app',
+  });
+</script>
+
+</body>
+</html>

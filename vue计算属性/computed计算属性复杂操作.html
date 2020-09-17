@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>computed计算属性复杂操作</title>
+</head>
+<body>
+
+<div id="app">
+  <ul>
+    <li v-for="(movie,index) in movies" v-on:click="getTotalPrice(movie),addNumber(movie)">{{movie.name}}--{{index}}--{{movie.number}}</li>
+  </ul>
+  <h3>选中电影的价格：{{totalPrice}}</h3>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      //电影对象数组
+      movies:[
+        {id:10001,name:'钢铁侠1',price:19,number:0},
+        {id:10002,name:'钢铁侠2',price:20,number:0},
+        {id:10003,name:'钢铁侠3',price:21,number:0},
+      ],
+      totalPrice:0
+    },
+    methods: {
+      //获得选中电影的总价格
+      getTotalPrice(movie) {
+        this.totalPrice+=movie.price;
+      },
+      addNumber(movie){
+        movie.number++;
+      }
+    },
+    computed: {
+    },
+  });
+</script>
+
+</body>
+</html>

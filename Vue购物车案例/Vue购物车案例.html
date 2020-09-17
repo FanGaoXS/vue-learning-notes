@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue购物车案例</title>
+</head>
+<body>
+
+<div id="app">
+  <!--books集合里有对象才会显示，否则不显示-->
+  <div v-if="books.length>0">
+    <table border="1">
+      <thead>
+      <tr>
+        <th>书籍编号</th>
+        <th>书籍名称</th>
+        <th>出版日期</th>
+        <th>价格</th>
+        <th>购买数量</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr v-for="(book,index) in books" v-show="book.number>0">
+        <td>{{book.id}}</td>
+        <td>{{book.name}}</td>
+        <td>{{book.publish}}</td>
+        <td>{{book.price | showPrice}}</td>
+        <td>
+          <button @click="decreaseNumber(book)" :disabled="book.number<=1">-</button>
+          {{book.number}}
+          <button @click="increaseNumber(book)">+</button>
+        </td>
+        <td><button @click="clear(index)">移除</button></td>
+      </tr>
+      </tbody>
+    </table>
+    <span>总价格：{{totalPrice | showPrice}}</span>
+  </div>
+  <div v-else>
+    <span>购物车为空</span>
+  </div>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      //书籍对象集合
+      books:[
+        {
+          id:1,name:'《Java》',
+          publish:'2002-9',
+          price:85,
+          number:1
+        },
+        {
+          id:2,
+          name:'《C++》',
+          publish:'2002-9',
+          price:50,
+          number:1
+        },
+        {
+          id:3,
+          name:'《Python》',
+          publish:'2002-9',
+          price:70,
+          number:1
+        },
+        {
+          id:4,
+          name:'《C#》',
+          publish:'2002-9',
+          price:90,
+          number:1
+        },
+      ],
+    },
+    methods: {
+      //数量增加
+      increaseNumber(book) {
+        book.number++;
+      },
+      //数量减少
+      decreaseNumber(book){
+        book.number--;
+      },
+      //清除方法
+      clear(index){
+        this.books.splice(index,1);
+      }
+    },
+    computed: {
+      //总价格
+      totalPrice() {
+        let totalPrice=0;
+        /*// 1、fori循环
+        for (let i = 0; i < this.books.length; i++) {
+          totalPrice+=this.books[i].price*this.books[i].number;
+        }*/
+        // 2、forof循环类似Java中的foreach增强for循环
+        for (let book of this.books) {
+          totalPrice+=book.price*book.number;
+        }
+        return totalPrice;
+      }
+    },
+    //过滤器
+    filters: {
+      showPrice(price) {
+        //toFixed(2)保留小数点后两位
+        return '￥'+price.toFixed(2);
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

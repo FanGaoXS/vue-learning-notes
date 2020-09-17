@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue的数组响应式方法</title>
+</head>
+<body>
+
+<div id="app">
+  <ul>
+    <li v-for="letter in letters">{{letter}}</li>
+  </ul>
+  <button @click="btnClick">按钮</button>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      //字母数组
+      letters:['A','C','B','D','E','F','G'],
+    },
+    methods: {
+      btnClick() {
+/*
+        // 1.push：向尾部插入元素
+        this.letters.push('e');//插入单个元素
+        this.letters.push('e','x','a','m');//插入多个元素
+
+        // 2.pop：从尾部移除元素
+        this.letters.pop();
+
+        // 3.unshift：向首部插入元素
+        this.letters.unshift('e');//插入单个元素
+        this.letters.unshift('e','x','a','m');//插入多个元素
+
+        // 4.shift：从首部移除元素
+        this.letters.shift();
+
+        // 5.sort：数组排序
+        // this.letters.sort();
+
+        // 6.reverse：数组反转
+        this.letters.reverse();
+
+        */
+
+        // 7.splice：元素删除/插入/替换
+        //从数组下标为1的元素开始，删除2个元素
+        //this.letters.splice(1,2);
+        //在数组下标为1的元素后面插入多个元素
+        //this.letters.splice(1,0,'e','x','a','m');
+        //在数组下标为1的元素后面的2个元素替换为多个元素
+        //this.letters.splice(1,2,'e','x','a','m');
+        this.letters.splice(0,1,'example');
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

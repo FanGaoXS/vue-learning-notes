@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-html的使用</title>
+</head>
+<body>
+
+<div id="app">
+  <p>{{h2}}</p>
+  <p v-html="h2">}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      h2: '<h2>标题</h2>',
+    },
+  });
+</script>
+
+</body>
+</html>

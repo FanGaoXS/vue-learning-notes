@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind的基本使用</title>
+</head>
+<body>
+
+<div id="app">
+  <!--常规写法-->
+  <img v-bind:src="imgUrl" alt="">
+  <a v-bind:href="aHref">百度一下</a>
+  <!--语法糖（简写）-->
+  <img :src="imgUrl" alt="">
+  <a :href="aHref">百度一下</a>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      aHref: 'https://www.baidu.com',
+      imgUrl: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
+    },
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--引入vue.js-->
+    <script src="../js/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>事件</title>
+</head>
+<body>
+<!--指定一个id为app的div盒子-->
+<div id="app">
+    <h3>计数器：{{counter}}</h3>
+    <!--调用increment函数-->
+    <button v-on:click="increment()">+</button>
+    <!--调用decrement函数-->
+    <button v-on:click="decrement()">-</button>
+</div>
+<script>
+    //实例化Vue对象
+    let app = new Vue({
+        //获得id为app的div盒子
+        el: '#app',
+        //定义数据
+        data: {
+            //计数器
+            counter: 0,
+        },
+        //定义方法
+        methods: {
+            //递增方法
+            increment(){
+                this.counter++;
+                console.log('调用了increment方法');
+            },
+            //递减方法
+            decrement(id){
+                this.counter--;
+                console.log('调用了decrement方法');
+            }
+        }
+    });
+</script>
+</body>
+</html>

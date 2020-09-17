@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-on的修饰符.once</title>
+</head>
+<body>
+
+<div id="app">
+  <!--加了.once修饰符后该按钮只会触发第一次，避免重复触发-->
+  <button @click.once="btnClick">按钮</button>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+    },
+    methods: {
+      btnClick() {
+        console.log('btnClick');
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

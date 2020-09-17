@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue组件化开发</title>
+</head>
+<body>
+
+<div id="app">
+  <!--使用cpn组件-->
+  <cpn></cpn>
+  <!--cpn组件复用-->
+  <cpn></cpn>
+  <cpn></cpn>
+  <cpn></cpn>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //1、创建组件构造器（需要一个extendOptions对象作为参数）
+  let cpnConstructor = Vue.extend({
+    //template就是自定义组件的模板
+    template:`
+      <div>
+        <h2>标题</h2>
+        <h3>内容</h3>
+      </div>
+    `
+  });
+
+  //2、注册组件（第一个参数是给这个自定义组件取的名字，第二个参数是组件构造器）
+  Vue.component('cpn',cpnConstructor);
+
+  let app = new Vue({
+    el: '#app',
+    data: {
+    },
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue作业1</title>
+  <style>
+    .active{
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <ul>
+    <li v-for="(movie,index) in movies"
+        @click="changeCurrentIndex(index)"
+        :class="{'active':currentIndex===index}">
+      {{movie}}--{{index}}</li>
+  </ul>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      movies:['钢铁侠1','钢铁侠2','钢铁侠3','复仇者联盟'],
+      currentIndex:0
+    },
+    methods: {
+      //修改当前选中的下标
+      changeCurrentIndex(index) {
+        this.currentIndex=index;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

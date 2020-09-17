@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind语法糖</title>
+</head>
+<body>
+
+<div id="app">
+  <!--v-bind全写-->
+  <a v-bind:href="aHref">百度一下</a>
+  <!--v-bind语法糖（简写）-->
+  <a :href="aHref">百度一下</a>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      aHref: 'https://www.baidu.com',
+    },
+  });
+</script>
+
+</body>
+</html>

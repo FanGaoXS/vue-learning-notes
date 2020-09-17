@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div id="app">
+  <!--v-bind动态绑定style格式
+  <p :style="{key(属性名):value(属性值)}"></p>-->
+  <!--直接赋值-->
+  <p :style="{color:'red','fontSize':'50px'}">{{message}}</p>
+  <!--动态绑定下面的值-->
+  <p :style="{'color':color,'fontSize':fontSize}">{{message}}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      color: 'red',
+      fontSize: '50px',
+    },
+  });
+</script>
+
+</body>
+</html>

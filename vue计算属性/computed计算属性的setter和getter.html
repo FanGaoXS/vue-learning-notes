@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>computed计算属性的getter和setter</title>
+</head>
+<body>
+
+<div id="app">
+  <h1>{{fullName}}</h1>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      firstName: 'Kobe',
+      lastName: 'Bryant'
+    },
+    //计算属性
+    computed: {
+      /*fullName() {
+        return this.firstName+' '+this.lastName;
+      }*/
+      fullName: {
+        //setter
+        set:function () {
+
+        },
+        //getter
+        get:function () {
+          return this.firstName+' '+this.lastName;
+        }
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

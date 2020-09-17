@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--引入vue.js-->
+    <script src="../js/vue.js"></script>
+    <meta charset="UTF-8">
+    <title>for循环</title>
+</head>
+<body>
+<!--定义一个id为app的盒子交给vue接管-->
+<div id="app">
+    <ul type="square">
+        <!--类似Java的增强for循环，students是集合，student是集合中的单个元素-->
+        <li v-for="student in students">{{student}}</li>
+    </ul>
+</div>
+</body>
+<script>
+    //实例化Vue对象
+    let app = new Vue({
+        //el是element（元素）的缩写，接管id为app的盒子，id选择器
+        el: '#app',
+        //定义数据
+        data: {
+            students: ['张三','李四','王麻子']
+        }
+    });
+</script>
+</html>

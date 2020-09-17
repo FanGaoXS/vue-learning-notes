@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind动态绑定class（对象语法）</title>
+  <style>
+    .active1{
+      color: red;
+    }
+    .active2{
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <h2 class="line" :class="{'active1': isActive1,'active2': isActive2}">{{message}}</h2>
+  <button v-on:click="changeColor()">切换颜色</button>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: '变色',
+      isActive1: true,
+      isActive2: false,
+    },
+    methods: {
+      changeColor() {
+        this.isActive1=!this.isActive1;
+        this.isActive2=!this.isActive2;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

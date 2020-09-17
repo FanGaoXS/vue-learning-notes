@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind作业</title>
+  <style>
+    .active{
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <ul>
+    <li v-for="(movie,index) in movies" v-on:click="changeColor(index)" v-bind:class="{'active': isActives[index]}">{{movie}}--{{index}}</li>
+  </ul>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      movies: ['钢铁侠1','钢铁侠2','钢铁侠3','复仇者联盟1'],
+      //默认第一个为true
+      isActives: [true,false,false,false]
+    },
+    methods: {
+      changeColor(index) {
+        this.isActives=[false,false,false,false];
+        //点击第几个就使得第几个为true
+        this.isActives[index]=true;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <!--适应移动端，提高在移动端上的性能-->
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+  <title>高德地图demo</title>
+  <style>
+    /*容器高度和宽度*/
+    #container {
+      width: 100%;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+
+<!--vue容器-->
+<div id="app">
+
+  <h1>高德地图demo：</h1>
+  <!--按钮1-->
+  <button @click="btnClick1">{{showOrHideString(isPolyline1)}}智地哥谭附近路径</button>
+  <!--按钮2-->
+  <button @click="btnClick2">{{showOrHideString(isPolyline2)}}腾讯大厦附近路径</button>
+  <!--按钮3-->
+  <button @click="btnClick3">{{showOrHideString(isPolyline3)}}天府广场附近路径</button>
+  <!--显示所有-->
+  <!--<button @click="showAll">显示所有路径</button>-->
+  <!--隐藏所有路径-->
+  <button @click="hideAll">隐藏所有路径</button>
+  <div>
+    <h3>起点： <em>{{startpoint}}</em></h3>
+    <h3>终点： <em>{{endpoint}}</em></h3>
+    <h3>路径长： <em>{{route | showRoute}}</em></h3>
+  </div>
+  <!--高德地图容器-->
+  <div id="container"></div>
+
+</div>
+
+<!--引入Vue.js-->
+<script src="../js/vue.js"></script>
+<!--引入高德地图JS api-->
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=9bdbdca399bb584f287ea079d9426b61"></script>
+<script>
+
+  let app=new Vue({
+    el:'#app',
+    data:{
+      //智地哥谭
+      lineArr1 : [
+        [104.056644,30.558043],
+        [104.055287,30.558043],
+        [104.05372,30.558024],
+        [104.05165,30.557992],
+        [104.052148,30.556897],
+        [104.052867,30.555733],
+        [104.055051,30.55577],
+        [104.056816,30.555789],
+        //[104.056644,30.558043]
+      ],
+      //腾讯大厦
+      lineArr2 : [
+        [104.064039,30.548197],
+        [104.062516,30.548178],
+        [104.060767,30.548178],
+        [104.060762,30.546866],
+        [104.062537,30.546866],
+        [104.064281,30.546903],
+        [104.064168,30.547554],
+        //[104.064039,30.548197]
+      ],
+      //天府广场
+      lineArr3 : [
+        [104.064215,30.658311],
+        [104.064293,30.656364],
+        [104.066037,30.656373],
+        [104.067281,30.65641],
+        [104.067426,30.656664],
+        [104.067448,30.657425],
+        [104.067458,30.658376],
+        [104.065768,30.658348],
+        //[104.064215,30.658311]
+      ],
+
+      polyline1 : {},
+      polyline2 : {},
+      polyline3 : {},
+
+      startpointMarker1:{},
+      startpointMarker2:{},
+      startpointMarker3:{},
+
+      endpointMarker1:{},
+      endpointMarker2:{},
+      endpointMarker3:{},
+
+      //默认不显示折线
+      isPolyline1:false,
+      isPolyline2:false,
+      isPolyline3:false,
+
+      startpoint:'',
+      endpoint:'',
+      route:0
+    },
+    methods: {
+
+      //按钮1
+      btnClick1(){
+        if (this.isPolyline1===false){
+          //显示折线1
+          this.showPolyline1();
+        }else if (this.isPolyline1===true){
+          //隐藏折线1
+          this.hidePolyline1();
+        }
+        //标识位取反
+        this.isPolyline1=!this.isPolyline1;
+
+      },
+      //按钮2
+      btnClick2(){
+        if (this.isPolyline2===false) {
+          //显示折线2
+          this.showPolyline2();
+        }else if (this.isPolyline2===true){
+          //隐藏折线2
+          this.hidePolyline2();
+        }
+        //标识位取反
+        this.isPolyline2=!this.isPolyline2;
+      },
+      //按钮3
+      btnClick3(){
+        if (this.isPolyline3===false){
+          //显示折线3
+          this.showPolyline3();
+        }else if (this.isPolyline3===true){
+          //隐藏折线3
+          this.hidePolyline3();
+        }
+        //标识位取反
+        this.isPolyline3=!this.isPolyline3;
+      },
+
+      //显示折线1
+      showPolyline1() {
+
+        // 传入经纬度，设置地图中心点
+        let position = this.lineArr1[0];
+        //设置地图中心点（移动到地图中心点）
+        map.setCenter(position);
+
+        //绘制路径轨迹（折线）
+        this.polyline1 = new AMap.Polyline({
+          path: this.lineArr1,          //设置线覆盖物路径
+          strokeColor: "#3366FF", //线颜色
+          strokeWeight: 5,        //线宽
+          strokeStyle: "solid",   //线样式
+          borderWeight: 2, // 线条宽度，默认为 1
+          lineJoin: 'round' // 折线拐点连接处样式
+        });
+
+        //设置起点标记marker
+        this.startpointMarker1 = new AMap.Marker({
+          icon:startIcon,
+          position: this.lineArr1[0],
+          title: '起点'
+        });
+
+        //设置终点标记marker
+        this.endpointMarker1 = new AMap.Marker({
+          icon:endIcon,
+          position: this.lineArr1[this.lineArr1.length-1],
+          title: '终点'
+        });
+
+        //将标记添加到地图上
+        map.add(this.startpointMarker1);
+        map.add(this.endpointMarker1);
+        map.add(this.polyline1);
+
+        //给起点终点路径长赋值
+        this.startpoint=this.lineArr1[0];
+        this.endpoint=this.lineArr1[this.lineArr1.length-1];
+        this.route= AMap.GeometryUtil.distanceOfLine(this.lineArr1);
+      },
+
+      //显示折线2
+      showPolyline2() {
+
+        // 传入经纬度，设置地图中心点
+        let position = this.lineArr2[0];
+        //设置地图中心点（移动到地图中心点）
+        map.setCenter(position);
+
+        //绘制路径轨迹（折线）
+        this.polyline2 = new AMap.Polyline({
+          path: this.lineArr2,          //设置线覆盖物路径
+          strokeColor: "#3366FF", //线颜色
+          strokeWeight: 5,        //线宽
+          strokeStyle: "solid",   //线样式
+          borderWeight: 2, // 线条宽度，默认为 1
+          lineJoin: 'round' // 折线拐点连接处样式
+        });
+
+        //设置起点标记marker
+        this.startpointMarker2 = new AMap.Marker({
+          icon:startIcon,
+          position: this.lineArr2[0],
+          title: '起点'
+        });
+
+        //设置终点标记marker
+        this.endpointMarker2 = new AMap.Marker({
+          icon:endIcon,
+          position: this.lineArr2[this.lineArr2.length-1],
+          title: '终点'
+        });
+
+        //将标记添加到地图上
+        map.add(this.startpointMarker2);
+        map.add(this.endpointMarker2);
+        map.add(this.polyline2);
+
+        //给起点终点路径长赋值
+        this.startpoint=this.lineArr2[0];
+        this.endpoint=this.lineArr2[this.lineArr2.length-1];
+        this.route= AMap.GeometryUtil.distanceOfLine(this.lineArr2);
+
+      },
+
+      //显示折线3
+      showPolyline3() {
+
+        // 传入经纬度，设置地图中心点
+        let position = this.lineArr3[0];
+        //设置地图中心点（移动到地图中心点）
+        map.setCenter(position);
+
+        //绘制路径轨迹（折线）
+        this.polyline3 = new AMap.Polyline({
+          path: this.lineArr3,          //设置线覆盖物路径
+          strokeColor: "#3366FF", //线颜色
+          strokeWeight: 5,        //线宽
+          strokeStyle: "solid",   //线样式
+          borderWeight: 2, // 线条宽度，默认为 1
+          lineJoin: 'round' // 折线拐点连接处样式
+        });
+
+        //设置起点标记marker
+        this.startpointMarker3 = new AMap.Marker({
+          icon:startIcon,
+          position: this.lineArr3[0],
+          title: '起点'
+        });
+        //设置终点标记marker
+        this.endpointMarker3 = new AMap.Marker({
+          icon:endIcon,
+          position: this.lineArr3[this.lineArr3.length-1],
+          title: '终点'
+        });
+
+        //将标记添加到地图上
+        map.add(this.startpointMarker3);
+        map.add(this.endpointMarker3);
+        map.add(this.polyline3);
+
+        //给起点终点路径长赋值
+        this.startpoint=this.lineArr3[0];
+        this.endpoint=this.lineArr3[this.lineArr3.length-1];
+        this.route= AMap.GeometryUtil.distanceOfLine(this.lineArr3);
+      },
+
+      //隐藏折线1
+      hidePolyline1(){
+        map.remove(this.startpointMarker1);
+        map.remove(this.endpointMarker1);
+        map.remove(this.polyline1);
+        //清空起点终点路径长
+        this.startpoint='';
+        this.endpoint='';
+        this.route=0;
+      },
+
+      //隐藏折线2
+      hidePolyline2(){
+        map.remove(this.startpointMarker2);
+        map.remove(this.endpointMarker2);
+        map.remove(this.polyline2);
+        //清空起点终点路径长
+        this.startpoint='';
+        this.endpoint='';
+        this.route=0;
+      },
+
+      //隐藏折线3
+      hidePolyline3(){
+        map.remove(this.startpointMarker3);
+        map.remove(this.endpointMarker3);
+        map.remove(this.polyline3);
+        //清空起点终点路径长
+        this.startpoint='';
+        this.endpoint='';
+        this.route=0;
+      },
+
+      //隐藏所有折线
+      hideAll() {
+        this.hidePolyline1();
+        this.hidePolyline2();
+        this.hidePolyline3();
+      },
+
+      //“显示”或者“隐藏”的字符串
+      showOrHideString(isPolyline){
+        if (isPolyline){
+          return '隐藏';
+        }else if (!isPolyline){
+          return '显示';
+        }
+      }
+
+    },
+
+    filters: {
+      //路径长过滤器，保留两位有效数字
+      showRoute: function (route) {
+        console.log(route);
+        console.log(route.toFixed(2));
+        return route.toFixed(3)+'米';
+      }
+    }
+  });
+
+  //地图实例初始化
+  let map = new AMap.Map('container', {
+    zoom:17,//级别
+    center: [104.05584,30.557255],//中心点坐标
+    viewMode:'3D'//使用3D视图
+  });
+
+  // 创建startIcon
+  let startIcon = new AMap.Icon({
+    // 图标尺寸
+    size: new AMap.Size(25, 34),
+    // 图标的取图地址
+    image: '//a.amap.com/jsapi_demos/static/demo-center/icons/dir-marker.png',
+    // 图标所用图片大小
+    imageSize: new AMap.Size(135, 40),
+    // 图标取图偏移量
+    imageOffset: new AMap.Pixel(-9, -3)
+  });
+
+  // 创建endIcon
+  let endIcon = new AMap.Icon({
+    size: new AMap.Size(25, 34),
+    image: '//a.amap.com/jsapi_demos/static/demo-center/icons/dir-marker.png',
+    imageSize: new AMap.Size(135, 40),
+    imageOffset: new AMap.Pixel(-95, -3)
+  });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>vue中computed计算属性</title>
+</head>
+<body>
+
+<div id="app">
+  <!--利用Mustache语法获取data里面的数据-->
+  <p>{{firstName}} {{lastName}}</p>
+  <!--利用Mustache语法获取computed里的数据-->
+  <p>{{fullName}}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      firstName: 'James',
+      lastName: 'Bond'
+    },
+    //计算属性
+    computed: {
+      fullName() {
+        //返回字符串的组合
+        return this.firstName+' '+this.lastName;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

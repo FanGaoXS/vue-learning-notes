@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vue的条件判断</title>
+</head>
+<body>
+
+<div id="app">
+  <h2>{{message}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      score: 90
+    },
+    computed: {
+      message() {
+        //先初始化一个返回值
+        let returnMessage='成绩错误，请检查';
+        if (this.score>=90){
+          returnMessage='成绩优秀';
+        }else if (this.score>=60){
+          returnMessage='成绩及格';
+        }else {
+          returnMessage='成绩不合格';
+        }
+        //返回这个初始化的返回值
+        return returnMessage;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

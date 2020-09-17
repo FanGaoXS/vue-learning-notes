@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-on传递参数</title>
+</head>
+<body>
+
+<div id="app">
+
+
+  <!--调用方法没有形参的时候可以不加括号（省略写法）-->
+  <button @click="btnClick1">按钮1</button>
+  <!--调用方法即使没有形参也可以加上括号，跟按钮1是等价的-->
+  <button @click="btnClick1()">按钮1</button>
+
+
+  <!--调用方法有形参的时候就可以传递参数-->
+  <button @click="btnClick2('测试')">按钮2</button>
+
+
+  <!--调用方法加上形参并且传递“$event”参数就可以显式传递事件对象（单击）-->
+  <button @click="btnClick3($event,'测试')">按钮3</button>
+  <!--如果不加上“$event”就会隐式传递事件对象，并且对应第一个形参（不建议这么做）-->
+  <button @click="btnClick3">按钮3</button>
+
+
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+
+    },
+    methods: {
+      //无参方法
+      btnClick1() {
+        console.log('btnClick1被调用');
+      },
+      //有参方法
+      btnClick2(value){
+        console.log('btnClick2被调用');
+        console.log(value);
+      },
+      //有参方法，事件对象
+      btnClick3(event,value){
+        console.log('btnClick3被调用');
+        console.log(event);
+        console.log(value);
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

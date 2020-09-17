@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-model双向绑定checkbox</title>
+</head>
+<body>
+
+
+<div id="app">
+  <!--v-model双向绑定结合checkbox实现单选-->
+  <!--<label for="license">
+    <input type="checkbox" id="license" value="同意" v-model="isAgree">我已经完整阅读上述协议
+  </label>
+  <h2>您选择的是：{{isAgree | showAgree}}</h2>-->
+
+  <!--v-model双向绑定结合checkbox实现复选-->
+  <h2>爱好：</h2>
+  <input type="checkbox" name="hobby" value="唱" v-model="hobbies">唱
+  <input type="checkbox" name="hobby" value="跳" v-model="hobbies">跳
+  <input type="checkbox" name="hobby" value="rap" v-model="hobbies">rap
+  <input type="checkbox" name="hobby" value="篮球" v-model="hobbies">篮球
+  <h2>你选择的爱好是：{{hobbies | showHobbies}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      isAgree: false,
+      hobbies:[]
+    },
+    filters: {
+      showAgree(value) {
+        if (value===true){
+          return '同意';
+        }else if (value===false){
+          return '不同意';
+        }
+      },
+      showHobbies(hobbies){
+        let returnString='';
+        for (let hobby of hobbies) {
+          returnString+=hobby+' ';
+        }
+        return returnString;
+      }
+    }
+  });
+</script>
+
+
+</body>
+</html>

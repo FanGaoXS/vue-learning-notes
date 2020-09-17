@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind和v-model结合checkbox</title>
+</head>
+<body>
+
+<div id="app">
+  <label v-for="item in originHobbies">
+    <input type="checkbox" :value="item" v-model="hobbies">{{item}}
+  </label>
+  <h2>你选择的爱好是：{{hobbies | showHobbies}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      //要显示在checkbox里的供用户选择的爱好数组（从后端获取）
+      originHobbies:['唱','跳','rap','篮球'],
+      //从前端得到然后再返回给后端
+      hobbies: []
+    },
+    filters: {
+      showHobbies: function (hobbies) {
+        let returnString='';
+        for (let hobby of hobbies) {
+          returnString+=hobby+' ';
+        }
+        return returnString;
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-text的使用</title>
+</head>
+<body>
+
+<div id="app">
+  <p>{{text}},Vue.js!</p>
+  <p v-text="text">,Vue.js!</p>
+  <p v-text="text+',Vue.js!'">,Vue.js!</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      text: 'Hello',
+    },
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-model双向绑定select</title>
+</head>
+<body>
+
+<div id="app">
+
+  <!--单选-->
+  <select name="fruit" v-model="fruit">
+    <option value="香蕉">香蕉</option>
+    <option value="苹果">苹果</option>
+    <option value="梨">梨</option>
+  </select>
+  <h2>你选择的水果是：{{fruit}}</h2>
+
+  <!--多选-->
+  <select name="fruits" v-model="fruits" multiple size="3">
+    <option value="香蕉">香蕉</option>
+    <option value="苹果">苹果</option>
+    <option value="梨">梨</option>
+  </select>
+  <h2>你选择的水果是：{{fruits | showFruits}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      fruit:'香蕉',
+      fruits:[]
+    },
+    filters: {
+      showFruits: function (fruits) {
+        let returnString='';
+        for (let fruit of fruits) {
+          returnString+=fruit+' ';
+        }
+        return returnString;
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

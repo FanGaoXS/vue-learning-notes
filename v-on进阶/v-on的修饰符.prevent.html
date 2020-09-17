@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-on的修饰符.prevent</title>
+</head>
+<body>
+
+<div id="app">
+  <form action="https://www.baidu.com">
+    <!--阻止组件的默认事件，而使用自定义的事件-->
+    <input type="submit" value="提交" @click.prevent="submit">
+  </form>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+
+    },
+    methods: {
+      //自定义按钮提交
+      submit() {
+        console.log('submit');
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>父组件和子组件的区分</title>
+  <style>
+    #app{
+      background-color: bisque;
+      width: 200px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <cpn1></cpn1>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+
+
+  //创建组件构造器2（子组件）
+  let cpnConstructor2 = Vue.extend({
+    template:`
+    <div>
+      <h2>我是组件2的标题</h2>
+      <h3>我是组件2的内容</h3>
+    </div>
+    `
+  });
+
+  //创建组件构造器1（父组件）
+  let cpnConstructor1 = Vue.extend({
+    template:`
+    <div>
+      <h2>我是组件1的标题</h2>
+      <h3>我是组件1的内容</h3>
+      <cpn2></cpn2>
+    </div>
+    `,
+    components:{
+      //在cpn1里注册cpn2
+      cpn2:cpnConstructor2
+    }
+  });
+
+  let app = new Vue({
+    el: '#app',
+    data: {
+    },
+    components:{
+      //在app里注册局部组件cpn1
+      cpn1:cpnConstructor1
+    }
+  });
+</script>
+
+</body>
+</html>

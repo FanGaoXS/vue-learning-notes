@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-on的修饰符.stop</title>
+</head>
+<body>
+
+<div id="app">
+
+  <div id="div1" @click="divClick">
+    <p>div1</p>
+    <!--.stop修饰符-->
+    <button @click.stop="btnClick">按钮1</button>
+  </div>
+
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+
+    },
+    methods: {
+      //按钮点击事件
+      btnClick() {
+        console.log('btnClick');
+      },
+      //div点击事件
+      divClick(){
+        console.log('divClick');
+      },
+      //键盘按下抬起事件
+      keyUp(){
+        console.log('keyUp');
+      },
+    },
+  });
+</script>
+
+</body>
+</html>

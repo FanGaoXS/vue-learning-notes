@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>v-on的修饰符keyCode和keyAlias</title>
+</head>
+<body>
+
+<div id="app">
+  <!--输入框（只监听回车键）-->
+  <input type="text" @keyup.enter="keyUp">
+  <!--输入框（只监听回车键）-->
+  <input type="text" @keyup.13="keyUp">
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+    methods: {
+      //键盘按下后抬起事件
+      keyUp() {
+        console.log('keyUp');
+      }
+    },
+  });
+</script>
+
+</body>
+</html>
