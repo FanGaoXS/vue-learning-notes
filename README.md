@@ -151,5 +151,1713 @@ VM（ViewModel，Model层和View层的桥梁）：负责监听M然后对V进行�
 
 ## 7、Vue的生命周期
 
+和微信小程序开发类似，在Vue.js里每个 Vue 实例在被创建时都要经过一系列的初始化过程——例如，需要设置数据监听、编译模板、将实例挂载到 DOM 并在数据变化时更新 DOM 等。同时在这个过程中也会运行一些叫做**生命周期钩子**的函数，这给了用户在不同阶段添加自己的代码的机会。同时生命周期的钩子函数是通过Vue实例的options对象的属性值传递给Vue的。
 
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue.js的生命周期</title>
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="app">{{message}}</div>
+<script>
+    let app = new Vue({
+        //绑定上文的元素
+        el: '#app',
+        //定义数据
+        data: {
+           message: 'Hello,Vue.js!'
+        },
+        //定义方法
+        methods:{
+
+        },
+        //生命周期函数：created（Vue实例被创建后运行的函数）
+        created:function () {
+            console.log('lifeCycle--->created函数执行');
+        }
+    });
+</script>
+</body>
+</html>
+```
+
+也有一些其它的钩子，在实例生命周期的不同阶段被调用，如`mounted`、`updated`和`destroyed`生命周期钩子的 `this` 上下文指向调用它的 Vue 实例。
+
+这是Vue实例的生命周期图示：
+
+**红线标注的都是执行到对应的生命周期的时候会调用的生命周期钩子函数**
+
+![](E:\吴青珂\大三\JavaEE\笔记\vue\lifecycle.png)
+
+## 8、Vue.js的插值操作
+
+### 8.1 v-once
+
+有的时候可能需要View的数据不根据Model的数据动态变化，就可以使用v-once指令。
+
+```html
+<body>
+
+<div id="app">
+  <h2>{{message}}</h2>
+  <h2 v-once>{{message}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+  });
+</script>
+
+</body>
+```
+
+加了v-once后{{message}}只会被渲染一次，后面model再改变message的数据的话依旧显示的是第一次渲染的数据不会发生动态改变。就像常量一样，加了v-once标签的数据不再发生改变。
+
+### 8.2 v-html
+
+有的时候可能后端向前端传递的数据不是纯文本或者纯字符串而是富文本，比如`<h2>标题</h2>`，我们希望它在页面上显示的是**标题**而不是`<h2>标题</h2>`，这个时候我们就可以给这个标签加上v-html指令
+
+```html
+<body>
+
+<div id="app">
+  <p>{{h2}}</p>
+  <p v-html="h2">}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      h2: '<h2>标题</h2>',
+    },
+  });
+</script>
+
+</body>
+```
+
+运行结果：
+
+![image-20200901125619657](E:\吴青珂\大三\JavaEE\笔记\vue\image-20200901125619657.png)
+
+可以看到没有加上v-html指令的标签内显示的内容就是纯字符串，加上了v-html指令的标签内显示的内容就是经过解析过后的富文本
+
+### 8.3 v-text
+
+```html
+<body>
+
+<div id="app">
+  <p>{{text}},Vue.js!</p>
+  <p v-text="text">,Vue.js!</p>
+  <p v-text="text+',Vue.js!'">,Vue.js!</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      text: 'Hello',
+    },
+  });
+</script>
+
+</body>
+```
+
+运行结果：
+
+![image-20200901130325498](E:\吴青珂\大三\JavaEE\笔记\vue\image-20200901130325498.png)
+
+可以观察到运行结果，如果直接使用Mustache语法（`{{}}`双大括号）可以直接在标签内里进行拼接字符串，但是如果使用了v-text指令后会直接将标签里的内容覆盖掉，但是同时也可以在v-text指令里使用+号进行拼接。
+
+### 8.4 v-pre
+
+```html
+<body>
+
+<div id="app">
+  <p>{{message}}</p>
+  <p v-pre>{{message}}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+  });
+</script>
+
+</body>
+```
+
+运行结果：
+
+![image-20200901130830323](E:\吴青珂\大三\JavaEE\笔记\vue\image-20200901130830323.png)
+
+v-pre就是实打实的显示标签内的内容而不经过解析。
+
+## 9、v-bind动态绑定
+
+### 9.1 v-bind的基本使用
+
+```html
+<body>
+
+<div id="app">
+  <img v-bind:src="imgUrl" alt="">
+  <a v-bind:href="aHref">百度一下</a>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      aHref: 'https://www.baidu.com',
+      imgUrl: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
+    },
+  });
+</script>
+
+</body>
+```
+
+传统的img和a标签里的url都是直接写死的，但是开发中肯定不会写死，肯定是从服务器请求然后得到JSON字符串然后从中获取到对应的url存储到Model里面，这个时候就需要用到v-bind指令来将Model里面的url放到img或者a标签里，使得它们能够解析url。
+
+同时v-bind还有一个语法糖（简写）：
+
+常规写法：
+
+```html
+<!--常规写法-->
+  <img v-bind:src="imgUrl" alt="">
+  <a v-bind:href="aHref">百度一下</a>
+```
+
+语法糖：（直接将`v-bind:`替换成`:`）
+
+```html
+<!--语法糖（简写）-->
+  <img :src="imgUrl" alt="">
+  <a :href="aHref">百度一下</a>
+```
+
+### 9.2 v-bind动态绑定class（对象语法）
+
+在vue里面可以实现动态绑定class，并且可以在class里面定义对象，对象里面采用key-value键值对的方式来确定这个属性是否生效（value必须是boolean类型），同时原来已有的class属性不会被覆盖，而是合并。
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>v-bind动态绑定class（对象语法）</title>
+  <style>
+    .active1{
+      color: red;
+    }
+    .active2{
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <h2 class="line" :class="{'active1': isActive1,'active2': isActive2}">{{message}}</h2>
+  <button v-on:click="changeColor()">切换颜色</button>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: '变色',
+      isActive1: true,
+      isActive2: false,
+    },
+    methods: {
+      changeColor() {
+        this.isActive1=!this.isActive1;
+        this.isActive2=!this.isActive2;
+      }
+    },
+  });
+</script>
+
+</body>
+</html>
+```
+
+h2标签里原本有一个固定的class属性叫line，同时后面交给vue解析的里面有一个对象，对象采用的是键值对的方式存储的，只要某个键（属性）的值为true，那么这个属性就会被启用，否则就不会被启用。
+
+总结就是class属性可以用原本固定的，不会被覆盖，只会被合并，:class属性里面可以使用对象来存储，对象里面是键值对的方式存储，key-value，如果value为true则该属性就会被启用，否则不会被启用。
+
+### 9.3 v-bind动态绑定style（对象语法）
+
+v-bind指令也可以动态绑定style的样式：直接在style里利用属性名：属性值给style赋值：
+
+```html
+<body>
+
+<div id="app">
+  <!--v-bind动态绑定style格式
+  <p :style="{key(属性名):value(属性值)}"></p>-->
+  <!--直接赋值-->
+  <p :style="{color:'red','fontSize':'50px'}">{{message}}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+  });
+</script>
+
+</body>
+```
+
+可以看到在style里依然是利用的对象语法来赋值的，key:value，假如value写死了的话就需要加上`''`单引号。
+
+也可以动态获取后端传的value：
+
+```html
+<body>
+
+<div id="app">
+  <!--v-bind动态绑定style格式
+  <p :style="{key(属性名):value(属性值)}"></p>-->
+  <!--动态绑定下面的值-->
+  <p :style="{'color':color,'fontSize':fontSize}">{{message}}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      color: 'red',
+      fontSize: '50px',
+    },
+  });
+</script>
+
+</body>
+```
+
+记住，直接赋值的时候的value应该加单引号，而动态获取值的时候就不要加引号，这样交给Vue解析的时候才会从下面去获取值。
+
+## 10、computed计算属性
+
+computed（计算好的，已经计算的）的属性就叫**计算属性**。在这之前我们可以直接在html的标签里使用Mustache语法使用data里的数据。像这样：
+
+```html
+<body>
+
+<div id="app">
+  <!--利用Mustache语法获取data里面的数据-->
+  <p>{{firstName}} {{lastName}}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      firstName: 'James',
+      lastName: 'Bond'
+    },
+  });
+</script>
+
+</body>
+```
+
+但是有的时候在Mustache语法里无法实现我们想要的效果，所以有的时候我们可以采用计算属性，也就是在Vue实例里添加computed属性，添加类似函数的一样的东西：有函数名，函数体，返回值（返回计算好的属性值）。在上文依旧是采用Mustache语法进行调用：
+
+```html
+<body>
+
+<div id="app">
+  <!--利用Mustache语法获取data里面的数据-->
+  <p>{{firstName}} {{lastName}}</p>
+  <!--利用Mustache语法获取computed里的数据-->
+  <p>{{fullName}}</p>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      firstName: 'James',
+      lastName: 'Bond'
+    },
+    //计算属性
+    computed: {
+      fullName() {
+        //返回字符串的组合
+        return this.firstName+' '+this.lastName;
+      }
+    },
+  });
+</script>
+
+</body>
+```
+
+为什么要用computed计算属性还有一个原因就是computed里面的属性是有缓存的，是可以提高运行效率的。
+
+## 11、computed计算属性的getter和setter
+
+其实计算属性有更全面的一种写法，依旧是定义computed属性，然后定义属性名，但是值是一个对象，对象里再定义get和set函数，像这样：
+
+```js
+	//计算属性
+    computed: {
+      fullName: {
+        //setter
+        set:function () {
+
+        },
+        //getter
+        get:function () {
+          return this.firstName+' '+this.lastName;
+        }
+      }
+    },
+```
+
+执行的原理实际上是修改fullName的值的时候就会调用set方法，读取fullName的值的时候就会调用get方法，但是我们一般不会在set方法里面写什么东西，所以就可以直接采用简写：
+
+```js
+	//计算属性
+    computed: {
+      fullName() {
+        return this.firstName+' '+this.lastName;
+      }
+    },
+```
+
+简写和上面同时显式声明get和set是一样的，同样也都会隐式调用get和set方法。
+
+## 12、Vue的语法糖总结
+
+1. v-bind动态绑定
+
+   ```html
+     <!--v-bind全写-->
+     <a v-bind:href="aHref">百度一下</a>
+   
+     <!--v-bind语法糖（简写）-->
+     <a :href="aHref">百度一下</a>
+   ```
+
+   将`v-bind:`直接简写成了`:`
+
+2. v-on事件监听
+
+   ```html
+     <!--v-on全写-->
+     <button v-on:click="log()">打印</button>
+     <!--v-on语法糖（简写）-->
+     <button @click="log()">打印</button>
+   ```
+
+   将`v-on:`直接简写成了`@`
+
+## 13、v-on参数传递问题
+
+v-on绑定的是事件，下面我用click单击事件为例子，梳理一下v-on事件参数传递的问题。
+
+1. 没有形参
+
+   ```html
+   <body>
+   
+   <div id="app">
+   
+     <!--调用方法没有形参的时候可以不加括号（省略写法）-->
+     <button @click="btnClick1">按钮1</button>
+     <!--调用方法即使没有形参也可以加上括号，跟按钮1是等价的-->
+     <button @click="btnClick1()">按钮1</button>
+   
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+         
+       },
+       methods: {
+         //无参方法
+         btnClick1() {
+           console.log('btnClick1被调用');
+         },
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   你可以不用加括号或者加上括号都可以，个人建议加上括号，易读。
+
+2. 有形参
+
+   ```html
+   <body>
+   
+   <div id="app">
+   
+     <!--调用方法有形参的时候就可以传递参数-->
+     <button @click="btnClick2('测试')">按钮2</button>
+   
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+   
+       },
+       methods: {
+         //有参方法
+         btnClick2(value){
+           console.log('btnClick2被调用');
+           console.log(value);
+         },
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   直接作为参数传递进去就好了
+
+3. **将事件对象作为形参传递**
+
+   ```html
+   <body>
+   
+   <div id="app">
+   
+     <!--调用方法加上形参并且传递“$event”参数就可以显式传递事件对象（单击）-->
+     <button @click="btnClick3($event,'测试')">按钮3</button>
+     <!--如果不加上“$event”就会隐式传递事件对象，并且对应第一个形参（不建议这么做）-->
+     <button @click="btnClick3">按钮3</button>
+   
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+   
+       },
+       methods: {
+         //有参方法，事件对象
+         btnClick3(event,value){
+           console.log('btnClick3被调用');
+           console.log(event);
+           console.log(value);
+         }
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   一般的做法就是直接在形参这里写上`$event`参数，然后就可以直接显式传递给方法自动解析成事件对象，比如click就是单击事件，dblclick就是双击事件。同时还可以直接不传递参数，一个都不写，这样方法里就会自动把第一个实参解析为事件对象，这种是隐式传递（不推荐这样做，不易读）。建议还是加上`$event`显式传递参数更加直观。
+
+## 14、v-on修饰符
+
+1. .stop修饰符**阻止冒泡事件**
+
+   给事件加上`.stop`修饰符可以达到阻止冒泡事件的目的。
+
+   先理解一下冒泡事件的概念：冒泡事件就是事件自下而上（自内而外）依次触发。简单来说在html里面就是假如标签内外都有事件，那么触发了标签最里面的事件后，标签外部的事件也会被触发。举个例子来体会一下：
+
+   ```html
+   <body>
+   
+   <div id="app">
+   
+     <div id="div1" @click="divClick">
+       <p>div1</p>
+       <button @click="btnClick">按钮1</button>
+     </div>
+   
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+         
+       },
+       methods: {
+         //按钮点击事件
+         btnClick() {
+           console.log('btnClick');
+         },
+         //div点击事件
+         divClick(){
+           console.log('divClick');
+         },
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   你会发现，点击按钮不仅会触发`divClick()`还会触发`btnClick()`（这就是冒泡事件），点击div1就只会触发`divClick()`。这在实际开发中并不是我们想要的，我们更多的想要的是点击按钮触发按钮事件，点击div1中文字就触发div事件，所以我们就要阻止这个按钮的冒泡事件传递，那么就只需要在按钮上加上`.stop`就可以了
+
+   ```html
+   <button @click.stop="btnClick">按钮1</button>
+   等价于
+   event.stopPropagation()
+   ```
+
+   那么，这个按钮的冒泡事件就被阻止了，就无法触发它外部标签的事件了。
+
+2. .prevent修饰符**阻止组件默认事件**
+
+   给事件加上`.prevent`修饰符以达到禁止该组件的默认事件，比如在form里面的自带的submit提交按钮的默认事件就是向form的action属性发起请求
+
+   ```html
+   <div id="app">
+     <form action="https://www.baidu.com">
+       <input type="submit" value="提交">
+     </form>
+   </div>
+   ```
+
+   点击提交按钮就会向`https://www.baidu.com`发起请求
+
+   如果加上了`.prevent`修饰符后就会阻止该组件的默认事件了：
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <form action="https://www.baidu.com">
+       <!--阻止组件的默认事件，而使用自定义的事件-->
+       <input type="submit" value="提交" @click.prevent="submit">
+     </form>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+   
+       },
+       methods: {
+         //自定义按钮提交
+         submit() {
+           console.log('submit');
+         }
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   这样点击按钮后就不会向action发起请求，而是执行用户自定义的submit方法，用户可以在这个方法里面自定义请求。
+
+3. .[keyCode|keyAlias]修饰符**监听键盘具体键位事件**
+
+   监听键盘具体某个键的事件。
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <!--输入框（监听键盘抬起事件，所有的按键都会被适用）-->
+     <input type="text" @keyup="keyUp">
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+         message: 'Hello,Vue.js!',
+       },
+       methods: {
+         //键盘按下后抬起事件
+         keyUp() {
+           console.log('keyUp');
+         }
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   `@keyUp`就是监听所有键位的抬起事件，如果加上了具体的某个键位的比如`.enter`或者`.13`因为回车键的keyCode就是13，回车键的keyAlias就是enter
+
+   ```html
+   <div id="app">
+     <!--输入框（只监听回车键）-->
+     <input type="text" @keyup.enter="keyUp">
+     <!--输入框（只监听回车键）-->
+     <input type="text" @keyup.13="keyUp">
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+         message: 'Hello,Vue.js!',
+       },
+       methods: {
+         //键盘按下后抬起事件
+         keyUp() {
+           console.log('keyUp');
+         }
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+4. .once修饰符只监听一次事件
+
+   只会触发第一次，避免重复触发
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <!--加了.once修饰符后该按钮只会触发第一次，避免重复触发-->
+     <button @click.once="btnClick">按钮</button>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+       },
+       methods: {
+         btnClick() {
+           console.log('btnClick');
+         }
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   
+
+## 15、v-if、v-else-if、v-else
+
+Vue里面也提供了条件判断，这点是和绝大多数语言都是相通的，举个简单例子来看一下。
+
+```html
+<div id="app">
+  <div v-if="score>=90">
+    <h2>成绩优秀</h2>
+  </div>
+  <div v-else-if="score>=60">
+    <h2>成绩及格</h2>
+  </div>
+  <div v-else>
+    <h2>成绩不合格</h2>
+  </div>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      score: 90
+    },
+  });
+</script>
+
+</body>
+```
+
+注意为了提高代码可读性建议做到if、elseif、else同级并列。并且通常不要在html里写太多逻辑判断的东西i，最好是在计算属性中进行复杂的逻辑判断然后返回给View。举个例子：
+
+```html
+<body>
+
+<div id="app">
+  <h2>{{message}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      score: 90
+    },
+    computed: {
+      message() {
+        //先初始化一个返回值
+        let returnMessage='';
+        if (this.score>=90){
+          returnMessage='成绩优秀';
+        }else if (this.score>=60){
+          returnMessage='成绩及格';
+        }else {
+          returnMessage='成绩不合格';
+        }
+        //返回这个初始化的返回值
+        return returnMessage;
+      }
+    },
+  });
+</script>
+
+</body>
+```
+
+直接在computed计算属性里面进行逻辑判断然后正确返回就好了。条件判断跟其他的编程语言基本没啥区别，主要就是需要注意的就是最好在view里面顶多进行简单的逻辑判断，复杂的逻辑判断交给计算属性。
+
+## 16、Vue的Dom会复用的问题
+
+在Vue的底层中其实是会先将Dom渲染成虚拟Dom最后再将虚拟Dom渲染到页面上的。有的时候Vue为了提高渲染时候的效率，Vue会自主地将它认为不可能产生冲突的两个Dom元素渲染成为一个虚拟Dom，这样的话就不会再额外创建另外一个虚拟Dom，可以大幅提升效率。
+
+举个简单例子来说：
+
+```html
+<body>
+
+<div id="app">
+  <span v-if="isUserName">
+    <label for="username">用户账号</label>
+    <input type="text" id="username" placeholder="请在这里输入你的用户账号">
+  </span>
+  <span v-else>
+    <label for="email">用户邮箱</label>
+    <input type="email" id="email" placeholder="请在这里输入你的用户邮箱">
+  </span>
+  <button @click="changeLoginType">切换登录方式</button>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      isUserName: true
+    },
+    methods: {
+      //切换登录方式
+      changeLoginType() {
+        this.isUserName=!this.isUserName;
+      }
+    },
+  });
+</script>
+
+</body>
+```
+
+这个需求就是通过二元来判断是显式用户账号输入框还是用户邮箱输入框，因为这两个span是互斥的，不可能同时存在，所以Vue就会自主地将他们两个Dom渲染成为一个虚拟Dom，当切换到另外一个输入框的时候就不需要再重新创建一个新的Dom。所以，其实两个span里的input输入框是被复用了的，所以当你在一个输入框里输入value的时候然后切换到另外一个输入框，你刚才输入的value仍然还在，这种情况有时候是不想出现的，我们更多的是想切换登录方式后再清除掉原有的输入内容。那么，我们就可以给这两个input输入框加上唯一的标识key，这样Vue就不会再擅作主张的把两个渲染成一个虚拟Dom了，而是不同的虚拟Dom。
+
+```html
+  <span v-if="isUserName">
+    <label for="username">用户账号</label>
+    <input type="text" id="username" placeholder="请在这里输入你的用户账号" key="username">
+  </span>
+  <span v-else>
+    <label for="email">用户邮箱</label>
+    <input type="text" id="email" placeholder="请在这里输入你的用户邮箱" key="email">
+  </span>
+```
+
+这个需要视使用场景而定，假如你切换了输入框后想要保留原有内容你就不会唯一标识key，使得Vue渲染成为同一个虚拟Dom，这样效率也会高。如果你需要切换输入框后不保留原有内容甚至情况，那么就加上唯一标识key，使得Vue渲染成为不同的虚拟Dom。
+
+## 17、v-show与v-if的区别
+
+`v-if`操作的是html的Dom元素，当if里面的boolean值为false时，那么`v-if`所在的整个dom元素都不存在，而`v-show`里面的boolean值如果是false的话，那么Vue其实仅仅是个这个元素加上了`style="display: none;"`的样式隐藏了而已。
+
+## 18、v-for遍历对象里面的元素
+
+v-for不仅仅可以遍历数组、集合，还可以遍历对象中的属性，比如这个student对象：
+
+```js
+	  //student对象
+      student:{
+        id:10001,
+        name:'张三',
+        age:18,
+      }
+```
+
+我想要依次把这个对象的属性遍历出来我也可以使用v-for来遍历出来，像这样：
+
+```html
+<body>
+
+<div id="app">
+  <!--遍历value-->
+  <ul>
+    <li v-for="item in student">{{item}}</li>
+  </ul>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      //student对象
+      student:{
+        id:10001,
+        name:'张三',
+        age:18,
+      }
+    },
+  });
+</script>
+
+</body>
+```
+
+这样就可以遍历这个对象，但是只能遍历出属性的值，也就是value，假如我们想要遍历出属性名，也就是key怎么办呢？像这样：
+
+```html
+  <!--遍历key-value-->
+  <ul>
+    <li v-for="(value,key) in student">{{key}}--{{value}}</li>
+  </ul>
+```
+
+**注意：**这里的value只能在一个参数位置，位置不能改变。
+
+同时也可以遍历出下标index，像这样：
+
+```html
+  <!--遍历key-value和下标-->
+  <ul>
+    <li v-for="(value,key,index) in student">{{index}}--{{key}}--{{value}}</li>
+  </ul>
+```
+
+## 19、常用的数组响应式方法
+
+1. push()：向尾部插入元素
+
+   ```js
+           // 1.push：向尾部插入元素
+           this.letters.push('e');//插入单个元素
+           this.letters.push('e','x','a','m');//插入多个元素
+   ```
+
+   
+
+2. pop()：从尾部移除元素
+
+   ```js
+           // 2.pop：从尾部移除元素
+           this.letters.pop();
+   ```
+
+   
+
+3. unshift()：向首部插入元素
+
+   ```js
+           // 3.unshift：向首部插入元素
+           this.letters.unshift('e');//插入单个元素
+           this.letters.unshift('e','x','a','m');//插入多个元素
+   ```
+
+   
+
+4. shift()：从首部移除元素
+
+   ```js
+           // 4.shift：从首部移除元素
+           this.letters.shift();
+   ```
+
+5. sort()：元素自动排序（按一定规则）
+
+   ```js
+           // 5.sort：数组排序
+           this.letters.sort();
+   ```
+
+6. reverse()：元素反转
+
+   ```js
+           // 6.reverse：数组反转
+           this.letters.reverse();
+   ```
+
+7. **splice()：元素删除/插入/替换**
+
+   splice方法有一个重载方法：
+
+   ```js
+   splice(start: number, deleteCount?: number): T[];
+   splice(start: number, deleteCount: number, ...items: T[]): T[];
+   ```
+
+   start：指定元素开始的下标
+
+   deleteCount：指定要删除元素的个数
+
+   items：插入或者替换的多个元素
+
+   元素删除：
+
+   ```js
+           //从数组下标为1的元素开始，删除2个元素
+           this.letters.splice(1,2);
+   ```
+
+   元素插入：（当第二个参数为0的时候代表插入元素）
+
+   ```js
+           //在数组下标为1的元素后面插入多个元素
+           this.letters.splice(1,0,'e','x','a','m');
+   ```
+
+   元素替换：
+
+   ```js
+           //在数组下标为1的元素后面的2个元素替换为多个元素
+           this.letters.splice(1,2,'e','x','a','m');
+   ```
+
+   其实我们可以理解成这三种操作实际上都是在对数组中的元素进行删除操作。当第二个参数有数字的时候代表要删除多少个元素，替换的时候我们也可以理解成先删掉元素再进行追加元素。当第二个参数为0的时候就代表不删除元素，然后直接进行追加元素。
+
+**特别注意：**使用如下这种方法并不能响应式的改变数组元素：
+
+```js
+this.letters[0]='example';
+```
+
+如果想要响应式的替换元素可以采用：
+
+```js
+this.letters.splice(0,1,'example');
+```
+
+## 20、在Vue中使用filters过滤器
+
+过滤器同样是Vue的一个options参数，叫属性名叫filters，值是一个对象，像这样：
+
+```js
+    filters: {
+      showPrice(price) {
+        //toFixed(2)保留小数点后两位
+        return '￥'+price.toFixed(2);
+      }
+    }
+```
+
+使用的时候就是像这样使用的：
+
+```html
+      <td>{{book.price | showPrice}}</td>
+```
+
+在这个参数后面加上`|`管道流符号，再加上过滤器的名字（注意，这个时候就不需要传递参数了，因为管道会自动将前面这个变量当作参数传递给后面的过滤器），像这样：
+
+```html
+      <td>{{showPrice(book.price)}}</td>
+```
+
+## 21、v-model框双向绑定输入框
+
+在表单中我们时常需要将model层里的数据映射到view层上，并且最好能够实现其中一个改变另外一个也跟着改变，v-model双向绑定就帮我们实现了这个需求。
+
+```html
+<body>
+
+<div id="app">
+  <input type="text" v-model="message">
+  <h2>{{message}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+  });
+</script>
+
+</body>
+```
+
+只要你改变data里的数据或者改变输入框中的值，model层和view里输入框中的值也会发生改变。
+
+## 22、v-model双向绑定radio
+
+```html
+<body>
+
+<div id="app">
+  <label>性别：</label>
+  <input type="radio" name="sex" value="男" v-model="sex">男
+  <input type="radio" name="sex" value="女" v-model="sex">女
+  <h3>你选择的性别是：{{sex}}</h3>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      sex:''
+    },
+  });
+</script>
+
+</body>
+```
+
+直接在每个radio里用v-model绑定sex，如果在data里的sex没有赋初始值，那么input里的radio默认就什么都不选，如果初始值赋了其中一个，那么默认就会选择那一个。
+
+## 23、v-model双向绑定checkbox
+
+1. 单选框
+
+   ```html
+   <body>
+   
+   
+   <div id="app">
+     <!--v-model双向绑定结合checkbox实现单选框-->
+     <label for="license">
+       <input type="checkbox" id="license" value="同意" v-model="isAgree">我已经完整阅读上述协议
+     </label>
+     <h2>您选择的是：{{isAgree | showAgree}}</h2>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+         isAgree: false,
+       },
+       filters: {
+         showAgree: function (value) {
+           if (value===true){
+             return '同意';
+           }else if (value===false){
+             return '不同意';
+           }
+         }
+       }
+     });
+   </script>
+   
+   
+   </body>
+   ```
+
+   同样，直接用`v-model`绑定data里面的`isAgree`就行了，绑定boolean值，true就是选中，false就是不被选中，为了方便观察读出的结果，我们可以使用过滤器将选中的boolean值格式化为`同意`或`不同意`的字符串。
+
+2. 复选框
+
+   ```html
+   <body>
+   
+   
+   <div id="app">
+   
+     <!--v-model双向绑定结合checkbox实现复选-->
+     <h2>爱好：</h2>
+     <input type="checkbox" name="hobby" value="唱" v-model="hobbies">唱
+     <input type="checkbox" name="hobby" value="跳" v-model="hobbies">跳
+     <input type="checkbox" name="hobby" value="rap" v-model="hobbies">rap
+     <input type="checkbox" name="hobby" value="篮球" v-model="hobbies">篮球
+     <h2>你选择的爱好是：{{hobbies | showHobbies}}</h2>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+         hobbies:[]
+       },
+       filters: {
+         showHobbies(hobbies){
+           let returnString='';
+           for (let hobby of hobbies) {
+             returnString+=hobby+' ';
+           }
+           return returnString;
+         }
+       }
+     });
+   </script>
+   
+   
+   </body>
+   ```
+
+   依旧是直接使用`v-model`绑定data里的hobbies数组（因为复选框的结果是数组），同意为了方便展示，直接使用过滤器将hobbies数组格式化成字符串数组然后遍历显示出来。
+   
+3. 与v-bind结合
+
+   大多数时候我们应该是要从后端获得原始的checkbox要显示的数据，然后前端复选了后再传递到提交到后端。从后端获取到的数据肯定是数组，然后通过遍历数组然后进行初始显示到页面上供用户选择。所以最开始肯定使用label来遍历数组：
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <label v-for="item in originHobbies">
+       <input type="checkbox" :value="item" v-model="hobbies" >{{item}}
+     </label>
+     <h2>你选择的爱好是：{{hobbies}}</h2>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+     let app = new Vue({
+       el: '#app',
+       data: {
+         //要显示在checkbox里的供用户选择的爱好数组（从后端获取）
+         originHobbies:['唱','跳','rap','篮球'],
+         //从前端得到然后再返回给后端
+         hobbies: []
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   因为遍历出来的数据肯定不止一个，所以要使用v-bind动态绑定value从而得到多个值，然后再通过v-model绑定到选择好的数组里供传递给后端。
+
+## 24、v-model双向绑定select
+
+```html
+<body>
+
+<div id="app">
+
+  <!--单选-->
+  <select name="fruit" v-model="fruit">
+    <option value="香蕉">香蕉</option>
+    <option value="苹果">苹果</option>
+    <option value="梨">梨</option>
+  </select>
+  <h2>你选择的水果是：{{fruit}}</h2>
+
+  <!--多选-->
+  <select name="fruits" v-model="fruits" multiple size="3">
+    <option value="香蕉">香蕉</option>
+    <option value="苹果">苹果</option>
+    <option value="梨">梨</option>
+  </select>
+  <h2>你选择的水果是：{{fruits | showFruits}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      fruit:'香蕉',
+      fruits:[]
+    },
+    filters: {
+      showFruits: function (fruits) {
+        let returnString='';
+        for (let fruit of fruits) {
+          returnString+=fruit+' ';
+        }
+        return returnString;
+      }
+    }
+  });
+</script>
+
+</body>
+```
+
+select标签里通过添加multiple属性指定变成多选，同样是需要在select里添加v-model绑定data里面的数据。
+
+## 25、v-model修饰符
+
+1. lazy修饰符
+
+   因为input输入框的特性，v-model绑定了data中的数据的时候是输入的时候立马把值附到data的数据里面的，而通常有的时候我们并不需要即使得到值，而是希望用户在输入框里失去焦点的时候再响应事件，比如用户按enter或者在输入框外面点击的时候，就直接给v-model加上.lazy修饰符：
+
+   ```html
+     <!--1、lazy修饰符（懒加载）-->
+     <input type="text" v-model.lazy="message">
+     <h3>你输入的内容是：{{message}}</h3>
+   ```
+
+   现在就是用户按enter或者在输入框外点击的时候才会触发事件（赋值），而不是随时都在赋值。
+
+2. number修饰符
+
+   因为html的input标签的特性，你所有的文本框中输入的内容都是字符串类型，即使你给强制指定了type为number但是你传递给后端的时候依旧是字符串类型，所以大多数时候你还需要在后端做一次强制类型转换，这也是html的input标签的特性，Vue的改进，只需要给v-model添加.number修饰符就可以在input框里作强制类型转换而不需要用js来转换或者在后端进行强制类型转换。比如：
+
+   ```html
+     <!--2、number修饰符（强制转换为数值类型）-->
+     <input type="number" v-model.number="number">
+     <h3>你输入的{{number}}是{{typeof number}}类型</h3>
+   ```
+
+   
+
+3. trim修饰符
+
+   trim修饰符就比较简单，就是去除input字符串里前和后的空格。
+
+   ```html
+     <!--3、trim修饰符（字符串前后去空格）-->
+     <input type="text" v-model="message">
+     <h3>你输入的内容是：{{message}}</h3>
+   ```
+
+## 26、Vue的组件化开发
+
+Vue可以将代码块封装成为一个组件，相互独立，方便管理和维护。同时还可以提高代码的复用性。
+
+组件化开发的过程：
+
+1. 创建组件构造器（`Vue.extend()`）
+
+   ```js
+     //1、创建组件构造器（需要一个extendOptions对象作为参数）
+     let cpnConstructor = Vue.extend({
+       template:`
+         <div>
+           <h2>标题</h2>
+           <h3>内容</h3>
+         </div>
+       `
+     });
+   ```
+
+   注意template属性的值可以使用html代码，同时结合ES6新语法使用tab键上的`号就可以达到将多行的代码直接换行，而不是以前的单引号加回车。
+
+2. 注册组件（`Vue.component()`）
+
+   ```js
+     //2、注册组件（第一个参数是给这个自定义组件取的名字，第二个参数是组件构造器）
+     Vue.component('cpn',cpnConstructor);
+   ```
+
+   因为html中不支持驼峰命名，所以自定义的组件名不可以使用驼峰命名法。
+
+3. 使用组件
+
+   ```html
+   <div id="app">
+     <!--使用cpn组件-->
+     <cpn></cpn>
+     <!--cpn组件复用-->
+     <cpn></cpn>
+     <cpn></cpn>
+     <cpn></cpn>
+   </div>
+   ```
+
+   直接在需要使用的html标签里使用就行了，前提是这个标签要交给Vue托管。
+
+4. 全部代码
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <!--使用cpn组件-->
+     <cpn></cpn>
+     <!--cpn组件复用-->
+     <cpn></cpn>
+     <cpn></cpn>
+     <cpn></cpn>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+   
+     //1、创建组件构造器（需要一个extendOptions对象作为参数）
+     let cpnConstructor = Vue.extend({
+       //template就是自定义组件的模板
+       template:`
+         <div>
+           <h2>标题</h2>
+           <h3>内容</h3>
+         </div>
+       `
+     });
+   
+     //2、注册组件（第一个参数是给这个自定义组件取的名字，第二个参数是组件构造器）
+     Vue.component('cpn',cpnConstructor);
+   
+     let app = new Vue({
+       el: '#app',
+       data: {
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   注意，需要先创建组件构造器然后注册组件，然后再用Vue托管html里的组件。
+
+## 27、全局组件和局部组件
+
+1. 全局组件
+
+   全局组件顾名思义就是所有的Vue实例对象里都可以使用的组件，刚刚上述注册的组件就是全局组件可以在另外一个Vue实例中使用，比如：
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <cpn1></cpn1>
+   </div>
+   
+   <div id="app2">
+     <cpn1></cpn1>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+   
+     //组件构造器
+     let cpnConstructor1 = Vue.extend({
+       template:`
+       <div>
+         <h2>全局组件</h2>
+         <h3>全局组件</h3>
+       </div>
+       `
+     });
+   
+     //注册全局组件cpn1
+     Vue.component('cpn1',cpnConstructor1);
+   
+     let app = new Vue({
+       el: '#app',
+     });
+   
+     let app2 = new Vue({
+       el: '#app2',
+     });
+   </script>
+   
+   </body>
+   ```
+
+   使用`Vue.component()`注册的组件就是全局组件，可以供所有的Vue实例对象使用，比如上述梨子就供#app1和#app2使用了
+
+2. 局部组件
+
+   局部组件就是只能在哪个Vue实例中注册的，就只能在该Vue实例中使用。比如：
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <cpn2></cpn2>
+   </div>
+   
+   <div id="app2">
+     <cpn2></cpn2>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+   
+     //组件构造器
+     let cpnConstructor2 = Vue.extend({
+       template:`
+       <div>
+         <h2>局部组件</h2>
+         <h3>局部组件</h3>
+       </div>
+       `
+     });
+   
+     let app = new Vue({
+       el: '#app',
+       components:{
+         cpn2:cpnConstructor2
+       }
+     });
+   
+     let app2 = new Vue({
+       el: '#app2',
+     });
+   </script>
+   
+   </body>
+   ```
+
+   因为cpn2组件只在#app里注册了，所有就只能在app这个Vue实例中使用，而不能在app2这个Vue实例中使用。同时局部组件的注册方法是利用传递Vue实例的Options属性的方法：
+
+   ```js
+     let app = new Vue({
+       el: '#app',
+       components:{
+         //自定义组件的名字：组件的构造器
+         cpn2:cpnConstructor2
+       }
+     });
+   ```
+
+
+## 28、父组件和子组件
+
+如果想在组件里使用另外的组件的话，就需要用到组件的嵌套。步骤如下：
+
+1. 注册多个组件
+
+   ```js
+     //创建组件构造器2
+     let cpnConstructor2 = Vue.extend({
+       template:`
+       <div>
+         <h2>我是组件2的标题</h2>
+         <h3>我是组件2的内容</h3>
+       </div>
+       `
+     });
+   
+     //创建组件构造器1
+     let cpnConstructor1 = Vue.extend({
+       template:`
+       <div>
+         <h2>我是组件1的标题</h2>
+         <h3>我是组件1的内容</h3>
+       </div>
+       `
+     });
+   ```
+
+2. 在Vue实例里注册局部组件
+
+   ```js
+     let app = new Vue({
+       el: '#app',
+       data: {
+       },
+       components:{
+         //在app里注册局部组件cpn1
+         cpn1:cpnConstructor1
+       }
+     });
+   ```
+
+3. 在cpn1组件的构造器里的注册cpn2组件并在template中使用
+
+   ```js
+     let cpnConstructor1 = Vue.extend({
+       template:`
+       <div>
+         <h2>我是组件1的标题</h2>
+         <h3>我是组件1的内容</h3>
+         <cpn2></cpn2>
+       </div>
+       `,
+       components:{
+         //在cpn1里注册cpn2
+         cpn2:cpnConstructor2
+       }
+     });
+   ```
+
+   注：在cpn1里注册cpn2，那么久只能在cpn1的template中使用cpn2
+
+   此时，cpn1就是父组件，cpn2就是子组件
+
+4. 所有代码
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <cpn1></cpn1>
+   </div>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+   
+     //创建组件构造器2（子组件）
+     let cpnConstructor2 = Vue.extend({
+       template:`
+       <div>
+         <h2>我是组件2的标题</h2>
+         <h3>我是组件2的内容</h3>
+       </div>
+       `
+     });
+   
+     //创建组件构造器1（父组件）
+     let cpnConstructor1 = Vue.extend({
+       template:`
+       <div>
+         <h2>我是组件1的标题</h2>
+         <h3>我是组件1的内容</h3>
+         <cpn2></cpn2>
+       </div>
+       `,
+       components:{
+         //在cpn1里注册cpn2
+         cpn2:cpnConstructor2
+       }
+     });
+   
+     let app = new Vue({
+       el: '#app',
+       data: {
+       },
+       components:{
+         //在app里注册局部组件cpn1
+         cpn1:cpnConstructor1
+       }
+     });
+   </script>
+   
+   </body>
+   ```
+
+## 29、组件模板分离写法
+
+在上述代码中，我们创建组件构造器的时候需要给template属性传递参数，参数是html代码，这样就会导致js代码里面夹杂了大量html代码，看起来会非常杂糅，所以为了改变这一现象并且使得代码看起来不那么杂糅，推荐使用模板分离写法。把html代码写在body标签里，给一个唯一的id给这个模板，然后将它赋给template属性。
+
+1. html模板
+
+   ```html
+   <template id="cpn">
+     <div>
+       <h2>我是标题</h2>
+       <h3>我是内容</h3>
+     </div>
+   </template>
+   ```
+
+   给这个模板赋id
+
+2. 作为参数将模板传递给template
+
+   ```js
+     //创建组件构造器
+     let cpnConstructor = Vue.extend({
+       template:'#cpn'
+     });
+   ```
+
+   将这个模板传递给template
+
+3. 完整代码
+
+   ```html
+   <body>
+   
+   <div id="app">
+     <cpn></cpn>
+   </div>
+   
+   <template id="cpn">
+     <div>
+       <h2>我是标题</h2>
+       <h3>我是内容</h3>
+     </div>
+   </template>
+   
+   <script src="../js/vue.js"></script>
+   <script>
+   
+     //创建组件构造器
+     let cpnConstructor = Vue.extend({
+       template:'#cpn'
+     });
+   
+     //注册组件为全局组件
+     Vue.component('cpn',cpnConstructor);
+   
+     let app = new Vue({
+       el: '#app',
+     });
+   </script>
+   
+   </body>
+   ```
+
+
+
+## 30、组件里的data
+
+组件里不能使用Vue实例里的data，所以组件里必须要有自己的data，就像“我的附庸的附庸不是我的附庸”一样。然而在组件里声明数据的方式跟在Vue实例里声明数据的方式有所不用，组件中是用函数来声明的，然后返回值返回的是数据，像这样：
+
+```js
+  //创建组件构造器
+  let cpnConstructor = Vue.extend({
+    template: '#cpn',
+    data(){
+      return {
+        message: 'Hello,Vue.js!'
+      }
+    }
+  });
+```
+
+这里比较特殊的就是利用函数来声明data，然后返回具体的数据的目的就是为了保证利用同一个组件构造器构造的多个组件里的数据不共用，每个组件各自有各自独立的数据。然后在template中使用：
+
+```html
+<template id="cpn">
+  <div>
+    <h2>我是标题</h2>
+    <h3>{{message}}</h3>
+  </div>
+</template>
+```
 
