@@ -5,6 +5,7 @@
   <!--适应移动端，提高在移动端上的性能-->
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
   <title>高德地图demo</title>
+
   <style>
     /*容器高度和宽度*/
     #container {
@@ -25,6 +26,8 @@
   <button @click="btnClick2">{{showOrHideString(isPolyline2)}}腾讯大厦附近路径</button>
   <!--按钮3-->
   <button @click="btnClick3">{{showOrHideString(isPolyline3)}}天府广场附近路径</button>
+  <!--按钮4-->
+  <button @click="btnClick4">测试</button>
   <!--显示所有-->
   <!--<button @click="showAll">显示所有路径</button>-->
   <!--隐藏所有路径-->
@@ -39,6 +42,10 @@
 
 </div>
 
+<!--引入jquery.js-->
+<script src="../js/jquery-3.5.1.js"></script>
+<script>
+</script>
 <!--引入Vue.js-->
 <script src="../js/vue.js"></script>
 <!--引入高德地图JS api-->
@@ -73,14 +80,16 @@
       ],
       //天府广场
       lineArr3 : [
-        [104.064215,30.658311],
+        [104.05357383333333,30.560853833333333],
+        [104.05357383333333,30.560758333333336],
+        /*[104.064215,30.658311],
         [104.064293,30.656364],
         [104.066037,30.656373],
         [104.067281,30.65641],
         [104.067426,30.656664],
         [104.067448,30.657425],
         [104.067458,30.658376],
-        [104.065768,30.658348],
+        [104.065768,30.658348],*/
         //[104.064215,30.658311]
       ],
 
@@ -143,6 +152,36 @@
         }
         //标识位取反
         this.isPolyline3=!this.isPolyline3;
+      },
+
+      //按钮4
+      btnClick4(){
+        let self=this;
+        let array=[];
+        $.post({
+          url:'../jsons/0917轨迹.json',
+          data:{
+
+          },
+          async:false,
+          //成功的回调函数
+          success:function (msg) {
+            console.log(msg.trace);
+            for (let i = 0; i < msg.trace.length; i++) {
+              array[i]=[msg.trace[i].lontitude,msg.trace[i].latitude];
+            }
+            console.log(array);
+          },
+          //失败的回调函数
+          error:function (msg) {
+            console.log(msg)
+          }
+        });
+        AMap.convertFrom(array, 'gps', function (status, result) {
+          if (result.info === 'ok') {
+            self.lineArr1 = result.locations; // Array.<LngLat>
+          }
+        });
       },
 
       //显示折线1
