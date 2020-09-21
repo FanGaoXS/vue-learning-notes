@@ -422,14 +422,14 @@
         let array=[];
         //ajax请求获取轨迹坐标系数组
         $.post({
-          url:'../jsons/0917轨迹.json',
+          url:'../jsons/0917.json',
           data:{
 
           },
           //异步关闭（同步）
           async:false,
           //成功的回调函数
-          success:function (res) {
+          success(res) {
             //将获取到的坐标系数组赋值给resArray
             let resArray = res.trace;
             //lontitude经度，latitude纬度
@@ -442,12 +442,14 @@
             console.log(res);
           }
         });
+        console.log(array[0]);
         //地球坐标系WGS84（GPS采用的坐标系）——>火星坐标系GCJ-02（高德采用的坐标系）
         AMap.convertFrom(array, 'gps', function (status, result) {
           if (result.info === 'ok') {
             that.lineArr4 = result.locations; // Array.<LngLat>
           }
         });
+        console.log(this.lineArr4[0]);
       }
 
     },
