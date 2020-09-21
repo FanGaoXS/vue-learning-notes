@@ -27,7 +27,7 @@
   <!--按钮3-->
   <button @click="btnClick3">{{showOrHideString(isPolyline3)}}天府广场附近路径</button>
   <!--按钮4-->
-  <button @click="btnClick4">测试</button>
+  <button @click="btnClick4">{{showOrHideString(isPolyline4)}}实地测试附近路径</button>
   <!--显示所有-->
   <!--<button @click="showAll">显示所有路径</button>-->
   <!--隐藏所有路径-->
@@ -80,35 +80,45 @@
       ],
       //天府广场
       lineArr3 : [
-        [104.05357383333333,30.560853833333333],
-        [104.05357383333333,30.560758333333336],
-        /*[104.064215,30.658311],
+        [104.064215,30.658311],
         [104.064293,30.656364],
         [104.066037,30.656373],
         [104.067281,30.65641],
         [104.067426,30.656664],
         [104.067448,30.657425],
         [104.067458,30.658376],
-        [104.065768,30.658348],*/
+        [104.065768,30.658348],
         //[104.064215,30.658311]
       ],
 
+      //实地测试用例
+      lineArr4 : [
+          [],
+      ],
+
+      //折线对象
       polyline1 : {},
       polyline2 : {},
       polyline3 : {},
+      polyline4 : {},
 
+      //起点
       startpointMarker1:{},
       startpointMarker2:{},
       startpointMarker3:{},
+      startpointMarker4:{},
 
+      //终点
       endpointMarker1:{},
       endpointMarker2:{},
       endpointMarker3:{},
+      endpointMarker4:{},
 
       //默认不显示折线
       isPolyline1:false,
       isPolyline2:false,
       isPolyline3:false,
+      isPolyline4:false,
 
       startpoint:'',
       endpoint:'',
@@ -141,6 +151,7 @@
         //标识位取反
         this.isPolyline2=!this.isPolyline2;
       },
+
       //按钮3
       btnClick3(){
         if (this.isPolyline3===false){
@@ -156,32 +167,17 @@
 
       //按钮4
       btnClick4(){
-        let self=this;
-        let array=[];
-        $.post({
-          url:'../jsons/0917轨迹.json',
-          data:{
-
-          },
-          async:false,
-          //成功的回调函数
-          success:function (msg) {
-            console.log(msg.trace);
-            for (let i = 0; i < msg.trace.length; i++) {
-              array[i]=[msg.trace[i].lontitude,msg.trace[i].latitude];
-            }
-            console.log(array);
-          },
-          //失败的回调函数
-          error:function (msg) {
-            console.log(msg)
-          }
-        });
-        AMap.convertFrom(array, 'gps', function (status, result) {
-          if (result.info === 'ok') {
-            self.lineArr1 = result.locations; // Array.<LngLat>
-          }
-        });
+        if (this.isPolyline4===false){
+          //获得折线4路径数组
+          this.getPolyline4();
+          //显示折线1
+          this.showPolyline4();
+        }else if (this.isPolyline4===true){
+          //隐藏折线4
+          this.hidePolyline4();
+        }
+        //标识位取反
+        this.isPolyline4=!this.isPolyline4;
       },
 
       //显示折线1
@@ -313,6 +309,49 @@
         this.route= AMap.GeometryUtil.distanceOfLine(this.lineArr3);
       },
 
+      //显示折线4
+      showPolyline4() {
+
+        // 传入经纬度，设置地图中心点
+        let position = this.lineArr4[0];
+        //设置地图中心点（移动到地图中心点）
+        map.setCenter(position);
+
+        //绘制路径轨迹（折线）
+        this.polyline4 = new AMap.Polyline({
+          path: this.lineArr4,          //设置线覆盖物路径
+          strokeColor: "#3366FF", //线颜色
+          strokeWeight: 5,        //线宽
+          strokeStyle: "solid",   //线样式
+          borderWeight: 2, // 线条宽度，默认为 1
+          lineJoin: 'round' // 折线拐点连接处样式
+        });
+
+        //设置起点标记marker
+        this.startpointMarker4 = new AMap.Marker({
+          icon:startIcon,
+          position: this.lineArr4[0],
+          title: '起点'
+        });
+        //设置终点标记marker
+        this.endpointMarker4 = new AMap.Marker({
+          icon:endIcon,
+          position: this.lineArr4[this.lineArr4.length-1],
+          title: '终点'
+        });
+
+        //将标记添加到地图上
+        map.add(this.startpointMarker4);
+        map.add(this.endpointMarker4);
+        map.add(this.polyline4);
+
+        //给起点终点路径长赋值
+        this.startpoint=this.lineArr4[0];
+        this.endpoint=this.lineArr4[this.lineArr4.length-1];
+        this.route= AMap.GeometryUtil.distanceOfLine(this.lineArr4);
+      },
+
+
       //隐藏折线1
       hidePolyline1(){
         map.remove(this.startpointMarker1);
@@ -346,11 +385,24 @@
         this.route=0;
       },
 
+      //隐藏折线4
+      hidePolyline4(){
+        map.remove(this.startpointMarker4);
+        map.remove(this.endpointMarker4);
+        map.remove(this.polyline4);
+        //清空起点终点路径长
+        this.startpoint='';
+        this.endpoint='';
+        this.route=0;
+      },
+
+
       //隐藏所有折线
       hideAll() {
         this.hidePolyline1();
         this.hidePolyline2();
         this.hidePolyline3();
+        this.hidePolyline4();
       },
 
       //“显示”或者“隐藏”的字符串
@@ -360,6 +412,42 @@
         }else if (!isPolyline){
           return '显示';
         }
+      },
+
+      //利用ajax获取折线4的路径数组
+      getPolyline4(){
+        //将Vue的内置对象this暂时转换为that（避免ajax的this对象和Vue的this对象冲突）
+        let that=this;
+        //坐标系数组局部变量
+        let array=[];
+        //ajax请求获取轨迹坐标系数组
+        $.post({
+          url:'../jsons/0917轨迹.json',
+          data:{
+
+          },
+          //异步关闭（同步）
+          async:false,
+          //成功的回调函数
+          success:function (res) {
+            //将获取到的坐标系数组赋值给resArray
+            let resArray = res.trace;
+            //lontitude经度，latitude纬度
+            for (let i = 0; i < resArray.length; i++) {
+              array[i]=[resArray[i].lontitude,resArray[i].latitude];
+            }
+          },
+          //失败的回调函数
+          error:function (res) {
+            console.log(res);
+          }
+        });
+        //地球坐标系WGS84（GPS采用的坐标系）——>火星坐标系GCJ-02（高德采用的坐标系）
+        AMap.convertFrom(array, 'gps', function (status, result) {
+          if (result.info === 'ok') {
+            that.lineArr4 = result.locations; // Array.<LngLat>
+          }
+        });
       }
 
     },
@@ -367,8 +455,6 @@
     filters: {
       //路径长过滤器，保留两位有效数字
       showRoute: function (route) {
-        console.log(route);
-        console.log(route.toFixed(2));
         return route.toFixed(3)+'米';
       }
     }
