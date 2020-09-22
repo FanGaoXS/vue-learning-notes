@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>利用$emit传递自定义事件实现子传父</title>
+</head>
+<body>
+
+<div id="app">
+  {{message}}
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+  });
+</script>
+
+</body>
+</html>

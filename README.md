@@ -1861,3 +1861,138 @@ Vue可以将代码块封装成为一个组件，相互独立，方便管理和�
 </template>
 ```
 
+
+
+## 31、父子组件之间通信（父传子props）
+
+在绝大多数真实开发过程中，父子组件是不可能完全隔离的，他们之间也会互相传输数据，比如子组件会从父组件获取数据，父组件也会给子组件传递参数，这之间的行为就好像“通信”一样。而父组件向子组件通信的方式是利用props。基本步骤如下：
+
+```js
+  //子组件
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    //子组件从父组件获取属性
+    props: {
+
+      //子属性cmessage
+      cmessage: {
+        //指定从父组件获取的属性的类型
+        type: String,
+        //要求父组件必须向子组件传递该参数
+        required:true
+      },
+
+      //子属性cmovies
+      cmovies: {
+        type: Array,
+        //设置假如父组件没有向子组件传递该参数的默认值
+        default(){//类型是数组或者对象的时候，默认值必须是函数
+          return ['movie1','movie2','movie3'];
+        }
+      }
+
+    },
+  });
+```
+
+在子组件里定义props属性，对象参数里定义将父组件获取到的参数的自定义属性名，参数同样是对象，该对象的参数有type（指定传入参数的数据类型），required（指定是否必须传入参数，true为必须），default（指定传入参数的默认值）。其中default比较特殊，如果传入的参数是数组或者对象类型，那么default必须指定为函数，然后将默认值返回。
+
+```html
+<!--root组件-->
+<div id="app">
+  <!--在root组件里使用cpn组件-->
+  <cpn v-bind:cmessage="message" v-bind:cmovies="movies"></cpn>
+</div>
+```
+
+同时在需要用到参数的父组件里声明子组件，并且在该子组件标签里利用v-bind将父组件里的参数绑定到子组件里。比如：
+
+```html
+v-bind:cmessage="message"
+<!-- cmessage是在子组件的props里声明的参数，message是在父组件的data中的数据 -->
+```
+
+然后再子组件里就可以使用了：
+
+```html
+<!--cpn组件模板-->
+<template id="cpn">
+  <div>
+    <h2>{{cmessage}}</h2>
+    <ul>
+      <li v-for="movie in cmovies">{{movie}}</li>
+    </ul>
+  </div>
+</template>
+```
+
+cmessage和cmovies就是子组件里props里的属性，就可以直接使用了。
+
+完整代码：
+
+```html
+<body>
+
+<!--root组件-->
+<div id="app">
+  <!--在root组件里使用cpn组件-->
+  <cpn v-bind:cmessage="message" v-bind:cmovies="movies"></cpn>
+</div>
+
+<!--cpn组件模板-->
+<template id="cpn">
+  <div>
+    <h2>{{cmessage}}</h2>
+    <ul>
+      <li v-for="movie in cmovies">{{movie}}</li>
+    </ul>
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //子组件
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    //子组件从父组件获取属性
+    props: {
+
+      //子属性cMessage
+      cmessage: {
+        //指定从父组件获取的属性的类型
+        type: String,
+        //要求父组件必须向子组件传递该参数
+        required:true
+      },
+
+      //子属性cMovies
+      cmovies: {
+        type: Array,
+        //设置假如父组件没有向子组件传递该参数的默认值
+        default(){//类型是数组或者对象的时候，默认值必须是函数
+          return ['movie1','movie2','movie3'];
+        }
+      }
+
+    },
+  });
+
+  //root组件（根组件）
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      movies:['钢铁侠1','钢铁侠2','钢铁侠3']
+    },
+    //在root组件里注册子组件
+    components:{
+      cpn:cpnConstructor
+    }
+  });
+</script>
+
+</body>
+```
+
+**Tips：**因为html里英文字母大小写是不敏感的，所以不支持驼峰命名的，但是vue里面支持，所以在html标签里使用到驼峰的地方就添加横杠`-`，比如`cMessage`就应该变成`c-message`。或者索性直接不使用驼峰命名。

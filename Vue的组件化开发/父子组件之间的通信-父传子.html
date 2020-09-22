@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>利用props实现父传子通信</title>
+</head>
+<body>
+
+<!--root组件-->
+<div id="app">
+  <!--在root组件里使用cpn组件-->
+  <cpn v-bind:c-message="message" v-bind:c-movies="movies"></cpn>
+</div>
+
+<!--cpn组件模板-->
+<template id="cpn">
+  <div>
+    <h2>{{cMessage}}</h2>
+    <ul>
+      <li v-for="movie in cMovies">{{movie}}</li>
+    </ul>
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //子组件
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    //子组件从父组件获取属性
+    props: {
+
+      //子属性cMessage
+      cMessage: {
+        //指定从父组件获取的属性的类型
+        type: String,
+        //要求父组件必须向子组件传递该参数
+        required:true
+      },
+
+      //子属性cMovies
+      cMovies: {
+        type: Array,
+        //设置假如父组件没有向子组件传递该参数的默认值
+        default(){//类型是数组或者对象的时候，默认值必须是函数
+          return ['movie1','movie2','movie3'];
+        }
+      }
+
+    },
+  });
+
+  //root组件（根组件）
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+      movies:['钢铁侠1','钢铁侠2','钢铁侠3']
+    },
+    //在root组件里注册子组件
+    components:{
+      cpn:cpnConstructor
+    }
+  });
+</script>
+
+</body>
+</html>
