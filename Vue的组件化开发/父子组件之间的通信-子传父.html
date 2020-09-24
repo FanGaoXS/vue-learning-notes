@@ -6,16 +6,58 @@
 </head>
 <body>
 
+<!--root（父）组件模板-->
 <div id="app">
-  {{message}}
+  <!--在父组件里中使用子组件-->
+  <cpn v-on:item-click="itemClick"></cpn>
 </div>
+
+<!--子组件模板-->
+<template id="cpn">
+  <div>
+    <!--循环遍历出分类-->
+    <button v-for="item in categories">{{item.name}}</button>
+  </div>
+</template>
 
 <script src="../js/vue.js"></script>
 <script>
+
+  //子组件
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    data(){
+      return {
+        categories:[
+          {id:1,name:'英语'},
+          {id:2,name:'数学'},
+          {id:3,name:'语文'},
+        ]
+      }
+    },
+    methods: {
+      btnClick(item) {
+        console.log('子组件---->',item);
+        //将子组件的事件发送出去，并且自定义事件名为item-click
+        this.$emit('item-click',item);
+      }
+    },
+  });
+
+  //root组件（父组件）
   let app = new Vue({
     el: '#app',
     data: {
-      message: 'Hello,Vue.js!',
+
+    },
+    components:{
+      //将子组件注册到父组件里
+      cpn:cpnConstructor
+    },
+    methods: {
+      itemClick(item) {
+        console.log('父组件---->',item);
+      }
     },
   });
 </script>

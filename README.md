@@ -1863,7 +1863,7 @@ Vue可以将代码块封装成为一个组件，相互独立，方便管理和�
 
 
 
-## 31、父子组件之间通信（父传子props）
+## 31、父子组件之间通信（父传子利用props）
 
 在绝大多数真实开发过程中，父子组件是不可能完全隔离的，他们之间也会互相传输数据，比如子组件会从父组件获取数据，父组件也会给子组件传递参数，这之间的行为就好像“通信”一样。而父组件向子组件通信的方式是利用props。基本步骤如下：
 
@@ -1996,3 +1996,113 @@ cmessage和cmovies就是子组件里props里的属性，就可以直接使用了
 ```
 
 **Tips：**因为html里英文字母大小写是不敏感的，所以不支持驼峰命名的，但是vue里面支持，所以在html标签里使用到驼峰的地方就添加横杠`-`，比如`cMessage`就应该变成`c-message`。或者索性直接不使用驼峰命名。
+
+## 32、父子组件之间通信（子传父利用$emit）
+
+在开发的过程中，有的时候也需要通过子组件来向父组件传递数据或者对象的时候，比如分类列表，大多数时候分类列表的二级列表里的东西应该是根据一级分类列表的数据来变化的，所以这个时候其实是根据一级菜单点击事件然后向服务器发送请求，获得二级列表里的数据然后来进行显示的。所以，子传父其实是利用子组件里产生事件，然后发送事件，父组件再接收（监听）事件，然后进行相应的处理。
+
+模拟子组件和父组件，父组件的data里包含一级列表数组对象，然后将子组件注册到父组件里：
+
+```js
+  //子组件
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    data(){
+      return {
+        categories:[
+          {id:1,name:'英语'},
+          {id:2,name:'数学'},
+          {id:3,name:'语文'},
+        ]
+      }
+    },
+  });
+
+  //root组件（父组件）
+  let app = new Vue({
+    el: '#app',
+    data: {
+
+    },
+    components:{
+      //将子组件注册到父组件里
+      cpn:cpnConstructor
+    },
+  });
+```
+
+子组件的模板template，以按钮的形式遍历出分类按钮：
+
+```html
+<!--子组件模板-->
+<template id="cpn">
+  <div>
+    <!--循环遍历出分类-->
+    <button v-for="item in categories">{{item.name}}</button>
+  </div>
+</template>
+```
+
+此时需要给按钮添加点击事件，在该事件里利用`this.$emit()`发射该事件，并且传递对象：
+
+```js
+  //子组件
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    data(){
+      return {
+        categories:[
+          {id:1,name:'英语'},
+          {id:2,name:'数学'},
+          {id:3,name:'语文'},
+        ]
+      }
+    },
+    methods: {
+      btnClick(item) {
+        console.log('子组件---->',item);
+        //将子组件的事件发送出去，并且自定义事件名为item-click
+        this.$emit('item-click',item);
+      }
+    },
+  });
+```
+
+`'item-click'`是自定义的事件名，表明在外部需要监听（接收）该事件，`item`是根据这个事件一起传递的对象，外部接收到该事件后同时也会接收到该对象。
+
+在父组件里通过监听刚刚自定义的事件（item-click）：
+
+```html
+<!--root（父）组件模板-->
+<div id="app">
+  <!--在父组件里中使用子组件-->
+  <cpn v-on:item-click="itemClick"></cpn>
+</div>
+```
+
+然后利用监听事件获得对象：
+
+```js
+  //root组件（父组件）
+  let app = new Vue({
+    el: '#app',
+    data: {
+
+    },
+    components:{
+      //将子组件注册到父组件里
+      cpn:cpnConstructor
+    },
+    methods: {
+      itemClick(item) {
+        console.log('父组件---->',item);
+      }
+    },
+```
+
+## 33、父传子、子传父之间的区别
+
+父组件传子组件是利用props传递：在父组件里利用v-bind将父组件里的数据主动绑定到子组件上。父传子是子被动集成父组件数据。
+
+子组件传父组件是利用\$emit传递：在子组件里利用​this.\$emit主动发射事件，然后父组件里监听该事件。子传父是子主动发射事件。
+
