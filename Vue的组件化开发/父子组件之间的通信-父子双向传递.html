@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>父子双向传递</title>
+</head>
+<body>
+
+<!--父组件模板-->
+<div id="app">
+  <!--在父组件中使用子组件-->
+  <cpn :c-num="num" @number-change="numberChange"></cpn>
+</div>
+
+<!--子组件模板-->
+<template id="cpn">
+  <div>
+    <h2>props:{{cNum}}</h2>
+    <h2>data:{{dNum}}</h2>
+    <input type="number" v-model="dNum" @input="inputEvent">
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //子组件
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    props:{
+      cNum:{
+        type:Number,
+        default: 0
+      }
+    },
+    data(){
+      return {
+        dNum:this.cNum,
+      }
+    },
+    methods: {
+      inputEvent() {
+        //向外部发出自定义事件，并且传递dNum参数
+        this.$emit('number-change',this.dNum);
+      }
+    },
+  });
+
+  //root组件（父组件）
+  let app = new Vue({
+    el: '#app',
+    data: {
+      num:10
+    },
+    components:{
+      //在父组件中注册子组件
+      cpn:cpnConstructor,
+    },
+    methods: {
+      numberChange(value) {
+        this.num=parseInt(value);
+      }
+    },
+  });
+</script>
+
+</body>
+</html>

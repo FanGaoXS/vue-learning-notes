@@ -2106,3 +2106,130 @@ cmessage和cmovies就是子组件里props里的属性，就可以直接使用了
 
 子组件传父组件是利用\$emit传递：在子组件里利用​this.\$emit主动发射事件，然后父组件里监听该事件。子传父是子主动发射事件。
 
+## 34、父组件访问子组件中数据
+
+开发的过程中假如我们需要在父组件中直接使用子组件的东西那么我们就需要直接访问到子组件内部，Vue提供了两种方法供父组件访问子组件，`$children`和`$refs`
+
+1. 父组件利用`$children`访问子组件
+
+   ```html
+   <body>
+   
+   <!--父组件模板-->
+   <div id="app">
+     <cpn></cpn>
+     <cpn></cpn>
+     <cpn></cpn>
+     <button @click="btnClick">按钮</button>
+   </div>
+   
+   <!--子组件模板-->
+   <template id="cpn">
+     <div>
+       <h3>我是子组件</h3>
+     </div>
+   </template>
+   <script src="../js/vue.js"></script>
+   <script>
+   
+     // 子组件
+     let cpnConstructor = Vue.extend({
+       template: '#cpn',
+       data() {
+         return {
+           message: '我是子组件的message',
+         }
+       },
+       methods: {
+         showMessage() {
+           console.log('我是子组件的showMessage()');
+         }
+       },
+     });
+   
+     // 父组件
+     let app = new Vue({
+       el: '#app',
+       data: {
+       },
+       components:{
+         //在父组件中注册子组件
+         cpn: cpnConstructor
+       },
+       methods: {
+         btnClick() {
+           console.log(this.$children);// 子组件对象数组
+           console.log(this.$children[0].message);// 第一个子组件对象的message属性
+           this.$children[0].showMessage();// 调用第一个子组件对象的showMessage()方法
+         }
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   我们可以在父组件里使用`this.$children`拿到在这个父组件里使用的子组件对象数组，然后直接通过调用第几个子组件对象的属性或者方法就可以直接访问子组件。只需要记住`this.$children`拿到的是子组件对象数组就好了。
+
+2. 父组件里用`$refs`访问子组件
+
+   ```html
+   <body>
+   
+   <!--父组件模板-->
+   <div id="app">
+     <cpn ref="cpn1"></cpn>
+     <cpn ref="cpn2"></cpn>
+     <cpn ></cpn>
+     <button @click="btnClick">按钮</button>
+   </div>
+   
+   <!--子组件模板-->
+   <template id="cpn">
+     <div>
+       <h3>我是子组件</h3>
+     </div>
+   </template>
+   <script src="../js/vue.js"></script>
+   <script>
+   
+     // 子组件
+     let cpnConstructor = Vue.extend({
+       template: '#cpn',
+       data() {
+         return {
+           message: '我是子组件的message',
+         }
+       },
+       methods: {
+         showMessage() {
+           console.log('我是子组件的showMessage()');
+         }
+       },
+     });
+   
+     // 父组件
+     let app = new Vue({
+       el: '#app',
+       data: {
+       },
+       components:{
+         //在父组件中注册子组件
+         cpn: cpnConstructor
+       },
+       methods: {
+         btnClick() {
+           console.log(this.$refs.cpn1); // 拿到ref为cpn1的子组件对象
+           console.log(this.$refs.cpn1.message); // 拿到子组件对象里的message属性
+           this.$refs.cpn1.showMessage(); // 调用子组件对象里的showMessage()方法
+         }
+       },
+     });
+   </script>
+   
+   </body>
+   ```
+
+   如果在使用子组件的地方指定`ref`属性（相当于给这个组件设置一个id，下文就需要根据这个id来取），在父组件里使用`this.$refs.+ref名`，比如`this.$refs.cpn1`就是取上文ref为cpn1的子组件，然后再通过.message或者.showMessage()调用该组件里的属性或者方法。
+
+这两种方法可以混合使用，但是开发中建议使用第二种，毕竟直接指定名字取比循环遍历取方法快捷并且易于维护。
