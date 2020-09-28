@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>$parent和$root</title>
+</head>
+<body>
+
+<!--父组件模板-->
+<div id="app">
+<cpn></cpn>
+</div>
+
+<!--子组件模板-->
+<template id="cpn">
+  <div>
+    <h3>{{message}}</h3>
+    <ccpn></ccpn>
+  </div>
+</template>
+
+<!--子子组件模板-->
+<template id="ccpn">
+  <div>
+    <h3>{{message}}</h3>
+    <button @click="btnClick">子子组件按钮</button>
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //子子组件构造器
+  let ccpnConstructor = Vue.extend({
+    template:'#ccpn',
+    data() {
+      return {
+        message: '我是子子组件的message',
+      }
+    },
+    methods: {
+      btnClick() {
+        //访问父组件
+        console.log(this.$parent);
+        //访问根组件
+        console.log(this.$root);
+      }
+    },
+  });
+
+  //子组件构造器
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    data() {
+      return {
+        message: '我是子组件的message',
+      }
+    },
+    components:{
+      //在子组件中注册子子组件
+      ccpn:ccpnConstructor,
+    }
+  });
+
+  //父组件
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+    components:{
+      //在父组件中注册子组件
+      cpn: cpnConstructor,
+    }
+  });
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
