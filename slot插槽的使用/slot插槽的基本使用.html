@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>slot插槽的基本使用</title>
+</head>
+<body>
+
+<div id="app">
+  <!--在cpn内部使用标签就会自动填充到slot插槽里了-->
+  <cpn><button>我是插槽1的按钮</button></cpn>
+  <cpn><span>我是插槽2的span标签</span></cpn>
+  <cpn><p>我是插槽3的p标签</p></cpn>
+  <!--没有给cpn指定标签，那么就会使用默认标签-->
+  <cpn></cpn>
+</div>
+
+<template id="cpn">
+  <div>
+    <h2>我是子组件</h2>
+    <!--在组件中预留插槽-->
+    <slot><p>我是子组件slot插槽里的默认标签</p></slot>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+
+  //组件构造器
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+  });
+
+  let app = new Vue({
+    el: '#app',
+    data: {},
+    components:{
+      cpn:cpnConstructor
+    }
+  });
+</script>
+
+</body>
+</html>

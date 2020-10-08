@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>slot具名插槽的使用</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn>
+    <!--p标签包括标签里的内容会替换没有具名的插槽-->
+    <p>我会替换没有具名的插槽</p>
+    <!--button标签包括标签里的内容会替换名为left的插槽-->
+    <button slot="left">我会替换left插槽</button>
+    <i slot="center">我会替换center插槽</i>
+    <p slot="right">我会替换right插槽</p>
+  </cpn>
+</div>
+
+<template id="cpn">
+  <div>
+    <h3>我是子组件</h3>
+    <slot name="left"></slot>
+    <slot name="center"></slot>
+    <slot name="right"></slot>
+    <slot><p>我是没有具名的插槽</p></slot>
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //组件构造器
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+  });
+
+  let app = new Vue({
+    el: '#app',
+    data: {},
+  });
+</script>
+
+</body>
+</html>
