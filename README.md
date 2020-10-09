@@ -2321,3 +2321,46 @@ cmessage和cmovies就是子组件里props里的属性，就可以直接使用了
 </div>
 ```
 
+## 38、slot作用域插槽
+
+有些时候我们会在组件的插槽里写好样式的标签，可是有的时候我们有需要在组件的外部自定义组件的样式的标签，但是数据仍然使用组件本身的数据，就需要使用作用域插槽。
+
+```html
+<!--子组件模板-->
+<template id="cpn">
+  <div>
+    <!--将movies绑定到data（自定义变量名）上，暴露给外部（外部通过data来获取）-->
+    <slot :data="movies">
+      <!--slot插槽里默认是ul>li循环遍历-->
+      <ul>
+        <li v-for="(item,index) in movies">{{index}}-{{item}}</li>
+      </ul>
+    </slot>
+  </div>
+</template>
+```
+
+在slot插槽里指定`:data="movies"`属性（data是自定义的，方便外部获取），movies就是这个组件里的数据。
+
+```html
+<div id="app">
+  <!--使用默认的组件-->
+  <cpn></cpn>
+  <!--使用组件并且向组件插槽里自定义标签-->
+  <cpn>
+    <!--获得组件的slot插槽-->
+    <template slot-scope="slot">
+      <!--循环遍历slot插槽里的data数组-->
+      <span v-for="item in slot.data">{{item}} - </span>
+    </template>
+  </cpn>
+</div>
+```
+
+在用到该组件的`<cpn></cpn>`标签里利用template标签，然后slot-scope属性绑定slot插槽，然后利用`slot.data`获得刚刚在组件里向外部暴露的数据，然后再进行遍历。
+
+**总结：**作用域插槽就是能够在组件的外部自定义样式标签，然后外部使用组件里的插槽里的数据。
+
+外部使用template标签里的slot-scope获得slot插槽。
+
+内部使用:data来绑定组件里的数据。

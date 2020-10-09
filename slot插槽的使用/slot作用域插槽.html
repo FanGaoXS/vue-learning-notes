@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>slot作用域插槽</title>
+</head>
+<body>
+
+<div id="app">
+  <!--使用默认的组件-->
+  <cpn></cpn>
+  <!--使用组件并且向组件插槽里自定义标签-->
+  <cpn>
+    <!--获得组件的slot插槽-->
+    <template slot-scope="slot">
+      <!--循环遍历slot插槽里的data数组-->
+      <span v-for="item in slot.data">{{item}} - </span>
+    </template>
+  </cpn>
+  <cpn>
+    <template slot-scope="slot">
+      <span>
+        {{slot.data.join(' - ')}}
+      </span>
+    </template>
+  </cpn>
+</div>
+
+<!--子组件模板-->
+<template id="cpn">
+  <div>
+    <!--将movies绑定到data（自定义变量名）上，暴露给外部（外部通过data来获取）-->
+    <slot :data="movies">
+      <!--slot插槽里默认是ul>li循环遍历-->
+      <ul>
+        <li v-for="(item,index) in movies">{{index}}-{{item}}</li>
+      </ul>
+    </slot>
+  </div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+
+  //组件构造器
+  let cpnConstructor = Vue.extend({
+    template:'#cpn',
+    data() {
+      return {
+        movies: ['钢铁侠1','钢铁侠2','钢铁侠3','复仇者联盟']
+      }
+    },
+  });
+
+  let app = new Vue({
+    el: '#app',
+    data: {},
+    components:{
+      cpn:cpnConstructor
+    }
+  });
+</script>
+
+</body>
+</html>
