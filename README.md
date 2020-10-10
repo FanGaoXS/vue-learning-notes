@@ -2364,3 +2364,119 @@ cmessage和cmovies就是子组件里props里的属性，就可以直接使用了
 外部使用template标签里的slot-scope获得slot插槽。
 
 内部使用:data来绑定组件里的数据。
+
+## 39、JavaScript模块化开发思想
+
+因为现在流行分工合作开发，所以难免会多人合作，所以多人合作的时候每个人都会有自己的模块，就会创建自己的js文件，这样提高了代码的可维护性和易读性，分工合作开发是主流也是趋势。但是这样时候就会陷入一个问题，就是因为js的特性，所有的js文件的作用域是在同一个，甚至在ES5以前，还没有let局部变量，所有的变量都是var全局变量，所以多人开发就极易导致变量或者函数重名，给程序带来灾难性毁灭。
+
+所以就引入了模块化开发。所谓模块化开发思想就是多人合作小组成员各自专注自己的代码，降低代码之间的耦合，提高开发效率。
+
+## 40、ES6模块化开发
+
+ES6规范是直接支持模块化开发的，而不用像CommonJS一样还需要依赖。模块化开发最需要解决的问题就是单个模块里自己需要暴露给其他模块和在自己模块引入其他模块。所以需要解决的核心问题就是导出（export）和引入（import）。
+
+1. 在html里直接用script标签引入，type类型必须指定为module（模块）
+
+   ```html
+   <body>
+   <!--模块化引入module1.js文件-->
+   <script src="module1.js" type="module"></script>
+   <!--模块化引入module2.js文件-->
+   <script src="module2.js" type="module"></script>
+   </body>
+   ```
+
+2. 在module1.js里导出
+
+   ```js
+   //定义变量
+   let name='模块1';
+   let age=18;
+   
+   //定义函数
+   function sum(num1,num2) {
+     return num1+num2;
+   }
+   
+   //定义类
+   class User {
+     constructor() {}
+   }
+   
+   //导出（暴露）
+   export {
+     name,age,sum,User
+   }
+   ```
+
+   用 `export { 变量名/函数名/类名 }`导出
+
+3. 在module2.js里导入
+
+   ```js
+   "use strict";
+   //从module1.js文件里导入name,age,sum,obj
+   import {name,age,sum,User} from "./module1.js";
+   
+   console.log(name);
+   console.log(age);
+   console.log(sum(20,30));
+   console.log(User);
+   ```
+
+就感觉上相当于模块中利用export把变量、函数、类导入到一个池中，然后再在需要的模块里利用import来导入。
+
+![image-20201010174013475](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201010174013475.png)
+
+## 41、ES6模块化开发导出和导入的几种方式
+
+除了上述的直接利用
+
+```js
+export{
+  变量,函数,类
+}
+```
+
+的方式导出，还有下面的方式可以进行导出：
+
+```js
+export let name='模块1';
+export let age=18;
+export function sum(num1,num2) {
+  return num1+num2;
+}
+export let obj={
+  constructor(){}
+}
+```
+
+直接在定义的时候就在前面加上export关键字就能导出了。还可以利用
+
+```js
+let name='模块1';
+export default name;
+```
+
+利用export default导出的话表示该模块只能导出一个，然后在需要导入的模块就直接利用
+
+```js
+import test from "./module1.js";
+
+console.log(test);
+```
+
+导入就可以了，因为导出的时候只能导出一个，所以导入的时候也就可以随便自定义名字了。
+
+最后一中导入方式，就是利用：
+
+```js
+import * as module1 from "./module1.js";
+
+console.log(module1.name);
+console.log(module1.age);
+console.log(module1.sum(20,30));
+console.log(module1.User);
+```
+
+从module1.js文件里导入所有东西，然后取module1为别名，然后再利用module1.name或者.age获得模块里的内容。
