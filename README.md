@@ -2481,96 +2481,91 @@ console.log(module1.User);
 
 从module1.js文件里导入所有东西，然后取module1为别名，然后再利用module1.name或者.age获得模块里的内容。
 
-## 42、webpack
+## 42、利用webpack配置vue
 
-1. 什么是webpack？
+关于webpack的介绍和使用可以参照这篇文章：                                                                                                                                                    https://blog.csdn.net/weixin_45747080/article/details/109166069
 
-   webpack可以看做是将模块自动打包的工具，它会自动分析项目结构，然后将一些浏览器不能直接运行的扩展语言（TypeScript等）打包为合适的结构以便用户的浏览器能够进行解析。
+webpack和Vue进行结合的话仍然需要以下几步：
 
-2. 为什么要用webpack？
-
-   因为在Vue中可能会用到大量的文件以及文件依赖以及项目结构，所以就推荐使用webpack来辅助打包。
-
-3. 怎么使用webpack
-
-   因为webpack的运行环境依赖node.js，所以需要先自行安装node.js。装好node.js之后再使用npm安装webpack
-
-4. 安装webpack
-
-   安装node.js完成后在windows命令行使用
+1. 利用npm命令安装vue
 
    ```shell
-   node -v  #查看node.js的环境变量是否生效
+   npm install vue@2.5.21 --save
    ```
 
-   如果node环境安装成功，再使用
+   因为我们在项目开发和项目上线的环境中都需要用到vue，所以这里就不用指定`-dev`
 
-   ```shell
-   npm install webpack@3.6.0 -g
-   ```
+2. 写vue的代码
 
-   进行全局安装webpack的3.6.0版本。
-
-## 43、利用webpack进行一次模块化打包
-
-webpack可以将之前使用AMD、CommonJS、ES6规范的模块化打包方式简化，只需要将模块代码写好后利用webpack进行打包就可以了。
-
-1. 新建项目（项目目录结构如下）
-
-   src存放开发时的源代码，dist存放经过webpack打包后的代码
-
-   ![image-20201012173955163](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201012173955163.png)
-   
-2. 新建两个js文件，其中一个导出，另外一个导入
-
-   info.js：
-
-   ```js
-   //定义变量
-   let name='测试';
-   let age=18;
-   let message='Hello!Webpack!';
-   
-   //导出变量（暴露）
-   export {
-     name,age,message
-   }
-   ```
-
-   main.js：
-
-   ```js
-   //从info文件中导入
-   import * as info from "./info";
-   
-   console.log(info.name);
-   console.log(info.age);
-   console.log(info.message);
-   ```
-
-3. 在命令行执行
-
-   ```shell
-   webpack ./src/main.js ./dist/bundle.js
-   #将main.js打包成为bundle.js
-   ```
-
-   这个时候webpack就会自动寻找模块之间的依赖关系（前提是代码没有错误），然后将所有的模块打包为一个bundle.js
-
-4. 在html里用script标签引用bundle.js
+   依旧是在index.html写
 
    ```html
-   <!DOCTYPE html>
-   <html lang="en">
-   <head>
-     <meta charset="UTF-8">
-     <title>Title</title>
-   </head>
-   <body>
-   <script src="./dist/bundle.js"></script>
-   </body>
-   </html>
+   <!--vue实例-->
+   <div id="app">
+     <h2>{{message}}</h2>
+   </div>
    ```
 
-利用webpack打包的好处就是你只需要专注完成模块内的代码，然后最后使用webpack进行打包，然后直接在html里引用一个js文件就可以了（因为webpack会把所有模块打包成一个js）
+   在js里先引入vue然后在创建vue实例
+
+   ```js
+   import Vue from 'vue'
+   
+   let app = new Vue({
+     el:'#app',
+     data:{
+       message:'Hello,webpack and vue!',
+     }
+   });
+   ```
+
+   我们利用npm安装好vue后就可以直接利用import从项目根目录导入vue了
+
+3. 在webpack.config.js里配置
+
+   ```js
+   
+   //从node的系统模块中获得path
+   const path=require('path');
+   
+   //指定webpack打包的起点（来源）和终点（目的地）
+   module.exports={
+     //起点字符串路径
+     entry:'./src/main.js',
+     //终点对象
+     output:{
+       //路径（拼接字符串）
+       path:path.resolve(__dirname,'dist'),
+       //生成的文件名
+       filename:'bundle.js',
+     },
+     resolve:{
+       alias:{
+         // 将runtime-only映射到runtime-compiler
+         'vue$':'vue/dist/vue.esm.js'
+       }
+     }
+   };
+   ```
+
+   依旧是需要配置导出导入的起点和终点。但是同时需要注意的是需要配置：
+
+   ```js
+   resolve:{
+       alias:{
+         // 将runtime-only映射到runtime-compiler
+         'vue$':'vue/dist/vue.esm.js'
+       }
+     }
+   ```
+
+   如果没有配置这个，那么vue只能在运行环境中使用，在编译的过程中就无法编译template，所以必须在webpack的配置文件里配置这一项。
+
+4. 利用webpack将整个项目打包
+
+   ```shell
+   npm run build
+   ```
+
+   
 

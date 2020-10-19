@@ -12,6 +12,8 @@ module.exports={
     path:path.resolve(__dirname,'dist'),
     //生成的文件名
     filename:'bundle.js',
+    // 是dist目录作为静态资源的根目录
+    publicPath:'dist/'
   },
   module: {
     rules: [
@@ -45,7 +47,7 @@ module.exports={
           },
         ]
       },
-      //  url-loader
+      //  url-loader和file-loader
       {
         // 匹配png/jpg/gif/jpeg等图片资源
         test: /\.(png|jpg|gif|jpeg)$/,
@@ -55,7 +57,8 @@ module.exports={
             options: {
               // 限制大小为20kb，默认是8kb
               limit: 20480,
-              name: 'img/[name].[hash:8],[ext]'
+              // 打包后的图片的命名规则
+              name: 'img/[name]_[hash:8].[ext]'
             }
           }
         ]
