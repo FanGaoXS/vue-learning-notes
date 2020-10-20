@@ -15,7 +15,7 @@ module.exports={
   },
   resolve:{
     alias:{
-      // 将runtime-only映射到runtime-compiler
+      // 将vue映射到runtime-compiler（vue.esm.js里包含能够编译template的compiler）
       'vue$':'vue/dist/vue.esm.js'
     }
   }

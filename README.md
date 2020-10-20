@@ -2541,7 +2541,7 @@ webpack和Vue进行结合的话仍然需要以下几步：
      },
      resolve:{
        alias:{
-         // 将runtime-only映射到runtime-compiler
+         // 将vue映射到runtime-compiler（vue.esm.js里包含能够编译template的compiler）
          'vue$':'vue/dist/vue.esm.js'
        }
      }
@@ -2551,9 +2551,9 @@ webpack和Vue进行结合的话仍然需要以下几步：
    依旧是需要配置导出导入的起点和终点。但是同时需要注意的是需要配置：
 
    ```js
-   resolve:{
+     resolve:{
        alias:{
-         // 将runtime-only映射到runtime-compiler
+         // 将vue映射到runtime-compiler（vue.esm.js里包含能够编译template的compiler）
          'vue$':'vue/dist/vue.esm.js'
        }
      }
@@ -2567,5 +2567,62 @@ webpack和Vue进行结合的话仍然需要以下几步：
    npm run build
    ```
 
+
+## 43、Vue CLI脚手架的介绍
+
+CLI（Commend-Line Interface）：命令行界面。
+
+Vue CLI是Vue官方推出的命令行界面的项目构建工具，俗称脚手架。脚手架简化了webpack的配置，变得更方便。
+
+## 44、Vue CLI的安装
+
+1. 脚手架的安装依旧依赖webpack：
+
+   ```shell
+   npm install -g @vue/cli
+   ```
+
+   全局安装vue，因为vue2.x的版本的命令不同于现在，所以@vue/cli实际上是安装的vue3.x及其以上的版本。
+
+2. 拉取vue2.x的模板
+
+   虽然我们用的脚手架是3.0以上，但是我们如果需要利用2.x的方式初始化项目是不可以的，除非拉取2.x的模板：
+
+   ```shell
+   npm install -g @vue/cli-init
+   ```
+
+   依旧是全局安装@vue/cli-init
    
+3. 创建vue项目
+
+   你既可以利用vue2.x创建项目也可以利用vue3.x创建项目
+
+   - vue2.x命令
+
+     ```shell
+     vue init webpack 项目名称
+     ```
+
+     
+
+   - vue3.x命令
+
+     ```shell
+     vue create 项目名称
+     ```
+
+     
+
+## 45、利用vue CLI创建vue项目
+
+直接使用
+
+```shell
+vue init webpack vue-test
+```
+
+就可以创建一个名为vue-test的vue项目了
+
+![image-20201020182552291](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201020182552291.png)
 
