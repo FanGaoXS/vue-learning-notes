@@ -2616,7 +2616,7 @@ Vue CLI是Vue官方推出的命令行界面的项目构建工具，俗称脚手�
 
 ## 45、利用vue CLI创建vue项目
 
-直接使用
+直接使用vue2.x的命令创建项目：
 
 ```shell
 vue init webpack vue-test
@@ -2625,4 +2625,57 @@ vue init webpack vue-test
 就可以创建一个名为vue-test的vue项目了
 
 ![image-20201020182552291](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201020182552291.png)
+
+打开我们刚刚新建好的项目我们可以看到vue2.x的目录结构如下：
+
+![image-20201021152508040](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201021152508040.png)
+
+## 46、vue cli构建方式runtime-compiler和runtime-only的区别
+
+从main.js的代码来看，这两种构建方式差距并不大：
+
+runtime-compiler的main.js：
+
+```js
+import Vue from 'vue'
+import App from './App'
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  components: {App},
+  template: '<App/>'					//template
+})
+```
+
+runtime-only的main.js：
+
+```js
+import Vue from 'vue'
+import App from './App'
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  render: h => h(App)					//render函数
+})
+```
+
+因为vue渲染页面的时候会将template解析成ast（抽象语言树）然后再利用render函数解析成virtuldom（虚拟dom）然后再渲染成UI。所以runtime-only就直接跳过了前两步，直接利用render函数解析成虚拟dom然后渲染到页面。所以runtime-only的效率会比runtime-compiler效率高，并且由于减少了解析template的代码，所以runtime-only构建的项目也会更小。所以真实开发中更倾向于用runtime-only
+
+## 47、利用vue-cli3创建项目
+
+之前我们利用vue-cli2理解了vue创建项目的原理以及众多配置文件，然而vue-cli3减少了很多配置文件，方便了许多。这里我们利用vue-cli3创建vue项目：
+
+```shell
+vue create 项目名称
+```
+
+然后就可以看到依旧是在创建项目前需要选择的选项：
+
+![image-20201021182647310](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201021182647310.png)
 
