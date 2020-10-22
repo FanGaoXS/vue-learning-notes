@@ -2679,3 +2679,85 @@ vue create 项目名称
 
 ![image-20201021182647310](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201021182647310.png)
 
+利用vue-cli3创建完项目后可以发现与之前的项目结构目录有所不同：
+
+![image-20201022122952874](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201022122952874.png)
+
+利用vue-cli3创建的项目比vue-cli2简化了许多。并且因为vue-cli3支持GUI，所以我们可以直接在全局终端输入：
+
+```shell
+vue ui
+```
+
+从而直接打开vue-cli3自带的可视化项目管理界面：
+
+![image-20201022143124750](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201022143124750.png)
+
+你可以直接在网页里管理项目的插件和依赖以及项目的相关配置，甚至还可以直接启动项目。
+
+## 48、在Vue中的前端路由思想
+
+所谓后端路由就是用户在浏览器地址请求url然后后端的controller就会跳转到对应的这个url请求的页面。
+
+前端路由则是用户在浏览器地址请求url的时候服务器就会一次性把所有的静态资源都给请求下来了（html+css+js），然后在前端里通过js里写一些判断逻辑然后将对应的html页面加载出来。甚至单页面富应用的话就只请求一个html页面，但是后续切换页面的时候则会直接利用js生成新的html代码从而加载到页面上。
+
+## 49、在前端不刷新页面从而改变浏览器url
+
+在js中前端想要请求到新的页面需要使用`windows.href='url'`方法会跳转到对应的页面并且浏览器的url页面相应改变，但是这样每请求一个页面就会刷新一次页面，每重新刷新一次页面就会重新向后端发起一次请求。这样不太符合前端路由的思想，于是有了`windows.hash='url'`，这样可以直接修改页面的url但是不会重新刷新页面。
+
+同时还有一种方法`history.pushState(data,title,url)`是类似栈的结构，可以改变页面的url，但是不会刷新页面，同时遵循先进后出的规则。使用浏览器的返回按键或者`history.back()`或者`history.go(-1)`就可以返回上一页，实际上也就是出栈。同时也可以使用浏览器的前进按钮或者`history.forward()`或者`history.go(1)`前进的前一页。
+
+## 50、vue-router的安装和配置
+
+在vue中，vue-router就是用来负责前端路由的映射的官方组件。
+
+安装vue-router可以在利用vue-cli创建项目的时候选择要安装vue-router或者在项目里直接使用：
+
+```shell
+npm install vue-router
+```
+
+此时你就需要在项目的src文件夹里面创建一个router文件夹，再新建一个index.js文件来配置路由映射的相关东西：
+
+```js
+// 1、引入vue-router和vue
+import VueRouter from 'vue-router';
+import Vue from 'vue';
+
+// 2、用vue.use()全局使用vue-router插件
+Vue.use(VueRouter);
+
+// 3、创建vue-router对象（和创建Vue实例类似）
+const router = new VueRouter({
+  //配置路由和页面的映射关系
+  routes:[
+
+  ]
+});
+
+// 4、导出（暴露）给外部，使得Vue能够使用它
+export default router;
+
+```
+
+因为我们肯定需要用到vue和vue-router，所以我们先引入他们，然后再用`Vue.use()`全局使用vue-router插件，其他插件也需要使用`Vue.use()`来启用。然后再创建router实例对象，里面得routes里配置路由和页面的映射关系。最后再export导出router对象以使得Vue能够接收。
+
+main.js：
+
+```js
+import Vue from 'vue'
+import App from './App'
+// 从router/index.js里导入路由组件
+import Router from './router/index'
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  Router,
+  render: h => h(App)
+})
+
+```
+
