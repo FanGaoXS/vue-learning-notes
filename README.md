@@ -2755,9 +2755,151 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  Router,
+  router: Router,
   render: h => h(App)
 })
 
 ```
+
+## 51、利用vue-router切换页面
+
+1. 首先我们先创建两个页面（也就是vue的组件）
+
+   Home.vue：
+
+   ```vue
+   <template>
+     <div>
+       <h2>{{title}}</h2>
+       <p>{{content}}</p>
+     </div>
+   </template>
+   
+   <script>
+     export default {
+       name: "Home",
+       data() {
+         return {
+           name: '主页',
+         }
+       },
+       computed: {
+         title() {
+           return '我是'+this.name+'的标题';
+         },
+         content() {
+           return '我是'+this.name+'的内容';
+         }
+       },
+     }
+   </script>
+   
+   <style scoped>
+   
+   </style>
+   
+   ```
+
+   About.vue：
+
+   ```vue
+   <template>
+     <div>
+       <h2>{{title}}</h2>
+       <p>{{content}}</p>
+     </div>
+   </template>
+   
+   <script>
+     export default {
+       name: "About",
+       data() {
+         return {
+           name: '关于',
+         }
+       },
+       computed: {
+         title() {
+           return '我是'+this.name+'的标题';
+         },
+         content() {
+           return '我是'+this.name+'的内容';
+         }
+       },
+     }
+   </script>
+   
+   <style scoped>
+   
+   </style>
+   
+   ```
+
+   
+
+2. 将这个两个组件在router里面引入并且配置映射关系
+
+   ```js
+   
+   // 1、引入vue-router和vue
+   import VueRouter from 'vue-router';
+   import Vue from 'vue';
+   
+   // 将两个页面导入
+   import Home from "../components/Home";
+   import About from "../components/About";
+   
+   // 2、用vue.use()全局使用vue-router插件
+   Vue.use(VueRouter);
+   
+   // 3、创建vue-router对象（和创建Vue实例类似）
+   const router = new VueRouter({
+     //配置路由和页面的映射关系
+     routes:[
+       {
+         // 输入/home时就会跳转到Home页面
+         path: '/home',
+         component: Home
+       },
+       {
+         // 输入/about时就会跳转到About页面
+         path: '/about',
+         component: About
+       },
+     ]
+   });
+   
+   // 4、导出（暴露）给外部，使得Vue能够使用它
+   export default router;
+   
+   ```
+
+   需要利用import将需要用到的页面先提前导入，然后再在routes数组里配置path和component的映射关系。
+
+   **Tips：**需要导出的对象叫router路由对象，需要配置映射关系的是route，只不过是它的复数routes
+
+3. 在需要显示的页面里利用router标签显示
+
+   最后在App.vue里利用router标签显示
+
+   App.vue：
+
+   ```vue
+   <template>
+     <div id="app">
+       <!--去首页的超链接-->
+       <router-link to="/home">首页</router-link>
+       <!--去关于的超链接-->
+       <router-link to="/about">关于</router-link>
+       <!--显示内容-->
+       <router-view/>
+     </div>
+   </template>
+   ```
+
+   router-link标签就是供点击的超链接，其中的to属性就是跳转到某个页面
+
+   router-view就是表示这个组件将在这里显示，有点类似html的iframe
+
+   ![image-20201023123710668](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201023123710668.png)
 
