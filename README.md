@@ -2714,7 +2714,7 @@ vue ui
 安装vue-router可以在利用vue-cli创建项目的时候选择要安装vue-router或者在项目里直接使用：
 
 ```shell
-npm install vue-router
+npm install vue-router --save
 ```
 
 此时你就需要在项目的src文件夹里面创建一个router文件夹，再新建一个index.js文件来配置路由映射的相关东西：
@@ -2897,9 +2897,342 @@ new Vue({
    </template>
    ```
 
-   router-link标签就是供点击的超链接，其中的to属性就是跳转到某个页面
+   router-link标签就是供点击的超链接，其中的to属性就是跳转到某个页面，它会被渲染成一个a标签
 
    router-view就是表示这个组件将在这里显示，有点类似html的iframe
 
    ![image-20201023123710668](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201023123710668.png)
 
+## 52、利用路由修改网站主页
+
+我们观察到即使加了vue-router进入页面仍然需要点击，包括进入主页也是，但是正常的逻辑应该是进入主页后自动显示的，所以vue-router中利用修改`/`的path然后重定向到主页的方法就可以了：
+
+```js
+  routes: [
+    {
+      //网站进去的第一个页面
+      path: '/',
+      // 重定向到/home的url
+      redirect: '/home'
+    },
+    {
+      // 输入/home时就会跳转到Home页面
+      path: '/home',
+      component: Home
+    },
+    {
+      // 输入/about时就会跳转到About页面
+      path: '/about',
+      component: About
+    },
+  ],
+```
+
+在routes里面配置一个新的对象，path为`/`（主页，或者直接为空也可以），然后重定向到主页的url
+
+## 53、将url的显示模式从hash模式修改到history模式
+
+![image-20201025161403190](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201025161403190.png)
+
+可以看到vue-router的url默认显示模式是采用的hash显示格式，很显然这不符合我们的常规，所以，我们可以在routes里配置一个mode，将它的默认修改为`history`，像这样：
+
+```js
+routes: [
+    {
+      //网站进去的第一个页面
+      path: '/',
+      // 重定向到/home的url
+      redirect: '/home'
+    },
+    {
+      // 输入/home时就会跳转到Home页面
+      path: '/home',
+      component: Home
+    },
+    {
+      // 输入/about时就会跳转到About页面
+      path: '/about',
+      component: About
+    },
+  ],
+  // 将默认的url显示默认修改为history
+  mode: 'history'
+```
+
+## 54、修改router-link渲染后的标签
+
+因为默认router-link会被渲染成a标签，但是我们可以给它添加tag属性，值为button或者div或者li就会被渲染成指定的属性，比如：
+
+```vue
+<template>
+  <div id="app">
+    <!--去首页的超链接-->
+    <router-link to="/home" tag="button">首页</router-link>
+    <!--去关于的超链接-->
+    <router-link to="/about" tag="button">关于</router-link>
+    <!--显示内容-->
+    <router-view/>
+  </div>
+</template>
+```
+
+就会被渲染成button，再比如：
+
+```vue
+<template>
+  <div id="app">
+    <!--去首页的超链接-->
+    <router-link to="/home" tag="li">首页</router-link>
+    <!--去关于的超链接-->
+    <router-link to="/about" tag="li">关于</router-link>
+    <!--显示内容-->
+    <router-view/>
+  </div>
+</template>
+```
+
+就会被渲染成li标签。
+
+其实你直接将router-link里的内容改对应的标签也可以，比如我修改成按钮：
+
+```vue
+<template>
+  <div id="app">
+    <!--去首页的超链接-->
+    <router-link to="/home"><button>首页</button></router-link>
+    <!--去关于的超链接-->
+    <router-link to="/about"><button>关于</button></router-link>
+    <!--显示内容-->
+    <router-view/>
+  </div>
+</template>
+```
+
+## 55、router-link里的replace属性
+
+```vue
+<template>
+  <div id="app">
+    <!--去首页的超链接-->
+    <router-link to="/home" tag="button" replace>home</router-link>
+    <!--去关于的超链接-->
+    <router-link to="/about" tag="button" replace>about</router-link>
+    <!--显示内容-->
+    <router-view/>
+  </div>
+</template>
+```
+
+给router-link里添加replace属性后那么通过点击该标签产生的history就不能再回溯了。意思就是不能通过history.back()或者history.forward()方法后退和前进。
+
+## 56、router-link的动态活跃属性
+
+因为router-link可以被用作为导航栏，一般用到导航栏就涉及到正在被点击事件，如果正在被点击事件那么这个router-link就拥有一个默认属性`class="router-link-active"`，我们就可以通过给router-link-active这个属性添加样式就可以达到我们想要的效果了。但是如果你觉得这个属性名太长了，你可以自定义，利用：
+
+```vue
+<template>
+  <div id="app">
+    <!--去首页的超链接-->
+    <router-link to="/home" tag="button" active-class="active">home</router-link>
+    <!--去关于的超链接-->
+    <router-link to="/about" tag="button" active-class="active">about</router-link>
+    <!--显示内容-->
+    <router-view/>
+  </div>
+</template>
+```
+
+给router-link添加一个active-class属性，属性值就是你自定义的该标签被选中的名字，只要该标签被选中那么就会有你自定义的这个class属性。但是这有点不方便的就是假如你的router-link标签过多你需要自己一个一个添加active-class，那么你可以尝试在routes里配置linkActiveClass：
+
+```js
+  //配置路由和页面的映射关系
+  routes: [
+    {
+      //网站进去的第一个页面
+      path: '/',
+      // 重定向到/home的url
+      redirect: '/home'
+    },
+    {
+      // 输入/home时就会跳转到Home页面
+      path: '/home',
+      component: Home
+    },
+    {
+      // 输入/about时就会跳转到About页面
+      path: '/about',
+      component: About
+    },
+  ],
+  // 将默认的url显示默认修改为history
+  mode: 'history',
+  // router-link被选中时添加class属性active
+  linkActiveClass: 'active'
+```
+
+这样也可以达到你的router-link被选中时自动添加class属性active，就不需要你一个一个手动添加active-class为active了。
+
+## 57、利用vue的内置对象$router来实现router-link
+
+假如我们不想通过router-link标签来切换页面，我们同时也可以采用监听点击事件然后使用vue的内置对象\$router的方式来切换页面。
+
+```vue
+<template>
+  <div id="app">
+
+    <button @click="toHome">首页</button>
+    <button @click="toAbout">关于</button>
+
+    <!--显示内容-->
+    <router-view/>
+  </div>
+</template>
+```
+
+在页面里通过button来监听事件，然后在事件里：
+
+```js
+export default {
+  name: 'App',
+  methods: {
+    toHome() {
+      // 去/home
+      this.$router.push('/home');
+    },
+    toAbout() {
+      // 去/about
+      this.$router.push('/about');
+    }
+  },
+}
+```
+
+利用`this.$router.push()`来跳转到对应的页面。
+
+## 58、利用vue-router实现动态路由
+
+假如现在我需要一个页面，页面上的内容需要显示的是给用户打招呼，需要在页面上显示用户的用户名，所以这个时候肯定需要动态地获取用户的名字。
+
+1. 需要先创建一个组件，叫user
+
+   ```vue
+   <template>
+     <div>
+       <h2>你好！{{username}}</h2>
+       <p>我是用户界面</p>
+     </div>
+   </template>
+   
+   <script>
+     export default {
+       name: "User",
+       computed: {
+         // 需要动态获取的
+         username() {
+             
+         }
+       },
+     }
+   </script>
+   
+   <style scoped>
+   
+   </style>
+   
+   ```
+
+   
+
+2. 在路由的routes中引入并配置好这个页面
+
+   ```js
+   
+   // 1、引入vue-router和vue
+   import VueRouter from 'vue-router';
+   import Vue from 'vue';
+   
+   // 将两个页面导入
+   import Home from "../components/Home";
+   import About from "../components/About";
+   import User from "../components/User";
+   
+   // 2、用vue.use()全局使用vue-router插件
+   Vue.use(VueRouter);
+   
+   // 3、创建router对象并且导出
+   export default new VueRouter({
+     //配置路由和页面的映射关系
+     routes: [
+       {
+         //网站进去的第一个页面
+         path: '/',
+         // 重定向到/home的url
+         redirect: '/home'
+       },
+       {
+         // 输入/home时就会跳转到Home页面
+         path: '/home',
+         component: Home
+       },
+       {
+         // 输入/about时就会跳转到About页面
+         path: '/about',
+         component: About
+       },
+       {
+         // :冒号后面的内容表示需要动态获取
+         path: '/user/:userId',
+         component: User
+       }
+     ],
+     // 将默认的url显示默认修改为history
+     mode: 'history',
+     // router-link被选中时添加class属性active
+     linkActiveClass: 'active'
+   });
+   
+   ```
+
+   在路由的index.js里引入user组件并且在routes中配置好user这个组件，并且在path中加上:userId表示userId是可以动态获取的。
+
+3. 加上router-link使其能够访问到这个页面
+
+   ```vue
+   <template>
+     <div id="app">
+   
+       <!--去首页的超链接-->
+       <router-link to="/home" tag="button">主页</router-link>
+       <!--去关于的超链接-->
+       <router-link to="/about" tag="button">关于</router-link>
+   
+       <router-link :to="'/user/'+userId" tag="button">我的</router-link>
+   
+       <!--显示内容-->
+       <router-view/>
+     </div>
+   </template>
+   ```
+
+   在前往user这个页面的router-link里加上v-bind:to（表示动态获取userId），这个userId就从这个页面的data中来。
+
+4. 在user这个页面中获取到想要显示的内容
+
+   ```js
+     computed: {
+         // 需要动态获取username
+         username() {
+           let userId=this.$route.params.userId;
+           console.log(userId);
+           if (userId==10){
+             return '张三';
+           }else {
+             return '李四';
+           }
+         }
+       },
+   ```
+
+   最后再在user这个组件的computed里利用this.\$route.params.userId获取到刚刚从router-link里动态绑定的userId。
+
+   **Tips：**this.\$route.params的作用就是获取到目前活跃的路由页面，也就是正在被点击的这个页面里的参数。
