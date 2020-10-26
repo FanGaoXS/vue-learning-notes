@@ -12,7 +12,6 @@
       // 需要动态获取username
       username() {
         let userId=this.$route.params.userId;
-        console.log(userId);
         if (userId==10){
           return '张三';
         }else {

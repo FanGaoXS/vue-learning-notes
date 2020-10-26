@@ -4,9 +4,14 @@ import VueRouter from 'vue-router';
 import Vue from 'vue';
 
 // 将两个页面导入
-import Home from "../components/Home";
+/*import Home from "../components/Home";
 import About from "../components/About";
-import User from "../components/User";
+import User from "../components/User";*/
+
+// 利用懒加载的方式加载页面
+const Home = () => import('../components/Home');
+const About = () => import('../components/About');
+const User = () => import('../components/User');
 
 // 2、用vue.use()全局使用vue-router插件
 Vue.use(VueRouter);

@@ -3236,3 +3236,59 @@ export default {
    最后再在user这个组件的computed里利用this.\$route.params.userId获取到刚刚从router-link里动态绑定的userId。
 
    **Tips：**this.\$route.params的作用就是获取到目前活跃的路由页面，也就是正在被点击的这个页面里的参数。
+
+## 59、路由懒加载
+
+因为前端路由的思想就是尽量一次性将前端静态资源获取下来，然后再通过路由来判断跳转到对应的页面。但是有个问题就是假如说前端的静态资源代码过多，那么获取的时长就会很长，给用户带来的体验就很不好。所以，这个时候我们就可以使用路由懒加载。
+
+懒加载，顾名思义就是用到的时候再加载。因为前端路由可以跳转到不同的页面，所以我们可以尝试再跳转到某个页面的时候再去获取到这个页面的对应的组件代码，这样就不会一次性获取大量的代码，给用户带来不好的体验。做法挺简单的，在路由的index.js里不再采用之前的`import User from "../components/User";`而是采用`const Home = () => import('../components/Home');`这样就可以达到通过前端路由跳转到某个页面然后再获取这个页面对应的静态资源了：
+
+```js
+
+// 1、引入vue-router和vue
+import VueRouter from 'vue-router';
+import Vue from 'vue';
+
+// 利用懒加载的方式加载页面
+const Home = () => import('../components/Home');
+const About = () => import('../components/About');
+const User = () => import('../components/User');
+
+// 2、用vue.use()全局使用vue-router插件
+Vue.use(VueRouter);
+
+// 3、创建router对象并且导出
+export default new VueRouter({
+  //配置路由和页面的映射关系
+  routes: [
+    {
+      //网站进去的第一个页面
+      path: '/',
+      // 重定向到/home的url
+      redirect: '/home'
+    },
+    {
+      // 输入/home时就会跳转到Home页面
+      path: '/home',
+      component: Home
+    },
+    {
+      // 输入/about时就会跳转到About页面
+      path: '/about',
+      component: About
+    },
+    {
+      path: '/user/:userId',
+      component: User
+    }
+  ],
+  // 将默认的url显示默认修改为history
+  mode: 'history',
+  // router-link被选中时添加class属性active
+  linkActiveClass: 'active'
+});
+
+```
+
+
+
