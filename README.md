@@ -3292,3 +3292,93 @@ export default new VueRouter({
 
 
 
+## 60、vue-router路由嵌套
+
+有的时候需要在路由里面继续添加路由的话就需要给路由添加子路由了，比如：
+
+```js
+  {
+      // 输入/home时就会跳转到Home页面
+      path: '/home',
+      component: Home,
+      // 子路由组件
+      children:[
+        {
+          path: 'news',
+          component: HomeNews
+        },
+        {
+          path: 'message',
+          component: HomeMessage
+        }
+      ]
+    },
+```
+
+我给home添加了两个子路由，一个叫news一个叫message（注意前面不能加`/`），不然就会变成绝对路径，然后再懒加载引入组件就可以了，这样就可以通过`/home/news`和`/home/message`这两个url进行访问了。此时假如我仍然需要给这个子路由添加一个首页的话就仍然需要利用重定向到news这个path：
+
+```js
+  {
+      // 输入/home时就会跳转到Home页面
+      path: '/home',
+      component: Home,
+      // 子路由组件
+      children:[
+        {
+          path: '',
+          redirect: 'news'
+        },
+        {
+          path: 'news',
+          component: HomeNews
+        },
+        {
+          path: 'message',
+          component: HomeMessage
+        }
+      ]
+    },
+```
+
+虽然我们配置好了路由，但是我们仍然需要在页面上通过router-link点击跳转到对应的页面，然后需要一个router-view来使得内容显示出来。所以我们需要在用到的页面，也就是Home这个页面（组件）里：
+
+```vue
+<template>
+  <div>
+    <h2>{{title}}</h2>
+    <p>{{content}}</p>
+
+    <router-link to="/home/news">查看新闻</router-link>
+    <router-link to="/home/message">查看消息</router-link>
+    <router-view/>
+
+  </div>
+
+
+
+</template>
+```
+
+注意，这里的路径需要加上绝对路径的全路径。
+
+## 61、vue-router利用query来传递对象参数
+
+有的时候我们想要通过路由来传递参数的时候很多时候可能不止传一个参数，甚至会传递一个对象。这个时候我们就可以利用query来传递：
+
+```vue
+    <!--利用query传递对象参数-->
+    <router-link :to="{ path: '/profile', query: { name: '张三', age:18 } }" tag="button">我的</router-link>
+```
+
+在:to里加上一个对象，然后对象里有路径，和需要传递的对象，然后在另一个页面利用`$route.query`获取到传递的query对象：
+
+```vue
+<template>
+  <div>
+    <h2>我是profile组件</h2>
+    <p>{{$route.query.name}}</p>
+    <p>{{$route.query.age}}</p>
+  </div>
+</template>
+```
+

@@ -3,15 +3,15 @@
 import VueRouter from 'vue-router';
 import Vue from 'vue';
 
-// 将两个页面导入
-/*import Home from "../components/Home";
-import About from "../components/About";
-import User from "../components/User";*/
-
 // 利用懒加载的方式加载页面
 const Home = () => import('../components/Home');
+const HomeNews = () => import('../components/HomeNews');
+const HomeMessage = () => import('../components/HomeMessage');
+
+
 const About = () => import('../components/About');
 const User = () => import('../components/User');
+const Profile = () => import('../components/Profile')
 
 // 2、用vue.use()全局使用vue-router插件
 Vue.use(VueRouter);
@@ -29,7 +29,22 @@ export default new VueRouter({
     {
       // 输入/home时就会跳转到Home页面
       path: '/home',
-      component: Home
+      component: Home,
+      // 子路由组件
+      children:[
+        {
+          path: '',
+          redirect: 'news'
+        },
+        {
+          path: 'news',
+          component: HomeNews
+        },
+        {
+          path: 'message',
+          component: HomeMessage
+        }
+      ]
     },
     {
       // 输入/about时就会跳转到About页面
@@ -39,6 +54,10 @@ export default new VueRouter({
     {
       path: '/user/:userId',
       component: User
+    },
+    {
+      path: '/profile',
+      component: Profile
     }
   ],
   // 将默认的url显示默认修改为history

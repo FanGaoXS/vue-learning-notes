@@ -2,7 +2,15 @@
   <div>
     <h2>{{title}}</h2>
     <p>{{content}}</p>
+
+    <router-link to="/home/news">查看新闻</router-link>
+    <router-link to="/home/message">查看消息</router-link>
+    <router-view/>
+
   </div>
+
+
+
 </template>
 
 <script>
