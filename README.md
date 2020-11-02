@@ -3382,3 +3382,34 @@ export default new VueRouter({
 </template>
 ```
 
+## 62、利用$router和query来传递对象参数
+
+假如我们不想使用router-link的方式来切换页面并且传递参数，我们可以使用按钮或者其他任意方式，然后监听事件来切换页面并且在事件里传递参数。
+
+1. 利用button来绑定事件：
+
+   ```vue
+     <button @click="toProfile()">我的</button>
+   ```
+
+   
+
+2. 在事件里利用$router跳转页面并且传递参数
+
+   ```js
+     methods: {
+       toProfile() {
+         this.$router.push({
+           // 跳转的路径
+           path:'/profile',
+           // 传递的对象
+           query:{
+             name: '张三',
+             age: 18
+           }
+         })
+       }
+     },
+   ```
+
+   在事件里利用\$router的push方法，里面指定path路径和query需要传递的参数对象，就和利用router-link跳转页面并且传递参数的方式一致了。
