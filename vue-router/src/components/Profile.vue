@@ -1,14 +1,20 @@
 <template>
   <div>
     <h2>我是profile组件</h2>
-    <p>{{$route.query.name}}</p>
-    <p>{{$route.query.age}}</p>
+    <p>{{name}}</p>
+    <p>{{age}}</p>
   </div>
 </template>
 
 <script>
   export default {
-    name: "Profile"
+    name: "Profile",
+    data() {
+      return {
+        name: this.$route.query.name,
+        age: this.$route.query.age,
+      }
+    },
   }
 </script>
 

@@ -3413,3 +3413,86 @@ export default new VueRouter({
    ```
 
    在事件里利用\$router的push方法，里面指定path路径和query需要传递的参数对象，就和利用router-link跳转页面并且传递参数的方式一致了。
+
+## 63、Vue中router和route的区别
+
+在上面我们尝试分别利用了：
+
+```vue
+this.$route.params
+this.$route.query
+this.$router.push()
+```
+
+那我们就需要搞清楚Vue的内置对象router和route的区别。先讲之前我先给这两个单词取两个名字，router叫路由器，route叫路由（组）。
+
+```js
+export default new VueRouter({
+  //配置路由和页面的映射关系
+  routes: [
+    {
+      //网站进去的第一个页面
+      path: '/',
+      // 重定向到/home的url
+      redirect: '/home'
+    },
+    {
+      // 输入/home时就会跳转到Home页面
+      path: '/home',
+      component: Home,
+      // 子路由组件
+      children:[
+        {
+          path: '',
+          redirect: 'news'
+        },
+        {
+          path: 'news',
+          component: HomeNews
+        },
+        {
+          path: 'message',
+          component: HomeMessage
+        }
+      ]
+    },
+    {
+      // 输入/about时就会跳转到About页面
+      path: '/about',
+      component: About
+    },
+    {
+      path: '/user/:userId',
+      component: User
+    },
+    {
+      path: '/profile',
+      component: Profile
+    }
+  ],
+  // 将默认的url显示默认修改为history
+  mode: 'history',
+  // router-link被选中时添加class属性active
+  linkActiveClass: 'active'
+});
+```
+
+在Vue中，我们在index中导出的这整个模块就叫router路由器，然而在router里面配置的routes路由组就是路由的集合。所以不难理解 ，router就是能够控制所有路由的对象，而route就是能够被路由器控制并且跟各个组件（页面）绑定的对象。比如：
+
+```js
+    {
+      // 输入/about时就会跳转到About页面
+      path: '/about',
+      component: About
+    },
+```
+
+就是一个route。
+
+所以，我们就可以利用`this.$router.push()`来控制各个路由之间的跳转，并且在跳转的过程中携带参数。
+
+而我们就可以利用`this.$route.params`或者`this.$route.query`来获得跳转过程中的参数。因为router只负责跳转，跳转完后就失效了，参数都是直接存到各个route路由中。
+
+![image-20201103182447091](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201103182447091.png)
+
+所以，涉及到跳转页面相关的就使用router，涉及到跳转后需要使用参数的就是用route
