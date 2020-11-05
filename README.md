@@ -3495,4 +3495,110 @@ export default new VueRouter({
 
 ![image-20201103182447091](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201103182447091.png)
 
-所以，涉及到跳转页面相关的就使用router，涉及到跳转后需要使用参数的就是用route
+所以，涉及到跳转页面相关的就使用router，涉及到跳转后需要使用参数的就是用route。
+
+## 64、导航守卫
+
+Vue里的导航守卫就是全局守卫。分为前置守卫（beforeEach）和后置守卫（afterEach）。顾名思义就是在通过导航跳转到某个组件前的离开某个组建后的“守卫”（可以定义相应的事件）。前置守卫和后置守卫是全局守卫，需要在router的index.js里面定义。比如：
+
+```js
+// 前置守卫
+router.beforeEach();
+// 后置守卫
+router.afterEach();
+```
+
+可以常用来判断用户是否登录。
+
+```js
+// 前置守卫
+router.beforeEach(function (to,from,next) {
+  // 将网页的标题设置为route里meta里的title
+  document.title=to.matched[0].meta.title;
+  // 继续跳转到下一个route
+  next();
+})
+```
+
+如上所示，使用前置守卫在页面加载前就指定网页的title。
+
+同理还有后置守卫。前置守卫和后置守卫都是全局守卫，其实还有组件内的守卫，都是大同小异，只是定义的位置可能不同而已。
+
+## 65、keep-alive保证组件不被频繁销毁
+
+在vue中，组件切换后默认是会被销毁的，然后再回到该组件的时候又会被重新创建。然而keep-alive就可以保证组件切换后不会被销毁，那么这样组件切换回来的时候也就不会被重新创建了（因为它本来就一直存在）。
+
+```vue
+<template>
+  <div>
+    <h2>{{title}}</h2>
+    <p>{{content}}</p>
+
+    <router-link to="/home/news">查看新闻</router-link>
+    <router-link to="/home/message">查看消息</router-link>
+    <router-view/>
+
+  </div>
+
+
+
+</template>
+
+<script>
+  export default {
+    name: "Home",
+    data() {
+      return {
+        name: '主页',
+      }
+    },
+    computed: {
+      title() {
+        return '我是'+this.name+'的标题';
+      },
+      content() {
+        return '我是'+this.name+'的内容';
+      }
+    },
+    // 生命周期函数：在组件被创建后调用
+    created() {
+      console.log('home created');
+    },
+    // 生命周期函数：在组件销毁后被调用
+    destroyed() {
+      console.log('home destroyed');
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>
+
+```
+
+给vue添加两个生命周期函数created和destroyed来观察组件切换前后组件的生存情况。
+
+```vue
+<template>
+  <div id="app">
+
+    <!--去首页的超链接-->
+    <router-link to="/home" tag="button">主页</router-link>
+    <!--去关于的超链接-->
+    <router-link to="/about" tag="button">关于</router-link>
+
+    <router-link :to="'/user/'+userId" tag="button">用户</router-link>
+
+    <button @click="toProfile()">我的</button>
+
+    <!--显示内容-->
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
+  </div>
+</template>
+```
+
+只需要给主页的router-view加上keep-alive标签后，尽管组件被切换走了那么这个组件仍然是不会被销毁的，被切换回来的时候也不需要重新创建，因为它本来就没被销毁，一直都存在。
+

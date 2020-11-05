@@ -29,6 +29,14 @@
         return '我是'+this.name+'的内容';
       }
     },
+    // 生命周期函数：在组件被创建后调用
+    created() {
+      console.log('home created');
+    },
+    // 生命周期函数：在组件销毁后被调用
+    destroyed() {
+      console.log('home destroyed');
+    }
   }
 </script>
 

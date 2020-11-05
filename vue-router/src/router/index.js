@@ -3,21 +3,22 @@
 import VueRouter from 'vue-router';
 import Vue from 'vue';
 
-// 利用懒加载的方式加载页面
-const Home = () => import('../components/Home');
-const HomeNews = () => import('../components/HomeNews');
-const HomeMessage = () => import('../components/HomeMessage');
+/*
+  使用懒加载加载组件
+ */
+const Home = () => import('../components/Home');  // Home组件
+const HomeNews = () => import('../components/HomeNews');  // HomeNews组件
+const HomeMessage = () => import('../components/HomeMessage');  // HomeMessage组件
 
-
-const About = () => import('../components/About');
-const User = () => import('../components/User');
-const Profile = () => import('../components/Profile')
+const About = () => import('../components/About');  // About组件
+const User = () => import('../components/User');  // User组件
+const Profile = () => import('../components/Profile');  // Profile组件
 
 // 2、用vue.use()全局使用vue-router插件
 Vue.use(VueRouter);
 
 // 3、创建router对象并且导出
-export default new VueRouter({
+const router=new VueRouter({
   //配置路由和页面的映射关系
   routes: [
     {
@@ -30,6 +31,11 @@ export default new VueRouter({
       // 输入/home时就会跳转到Home页面
       path: '/home',
       component: Home,
+      // 元数据
+      meta: {
+        // 网页标题
+        title: '首页'
+      },
       // 子路由组件
       children:[
         {
@@ -49,15 +55,30 @@ export default new VueRouter({
     {
       // 输入/about时就会跳转到About页面
       path: '/about',
-      component: About
+      component: About,
+      // 元数据
+      meta: {
+        // 网页标题
+        title: '关于'
+      },
     },
     {
       path: '/user/:userId',
-      component: User
+      component: User,
+      // 元数据
+      meta: {
+        // 网页标题
+        title: '用户'
+      },
     },
     {
       path: '/profile',
-      component: Profile
+      component: Profile,
+      // 元数据
+      meta: {
+        // 网页标题
+        title: '档案'
+      },
     }
   ],
   // 将默认的url显示默认修改为history
@@ -65,3 +86,12 @@ export default new VueRouter({
   // router-link被选中时添加class属性active
   linkActiveClass: 'active'
 });
+// 前置守卫
+router.beforeEach(function (to,from,next) {
+  // 将网页的标题设置为route里meta里的title
+  document.title=to.matched[0].meta.title;
+  // 继续跳转到下一个route
+  next();
+})
+// 导出router
+export default router;
