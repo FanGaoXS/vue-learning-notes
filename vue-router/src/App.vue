@@ -14,7 +14,7 @@
     <button @click="toProfile()">我的</button>
 
     <!--显示内容-->
-    <keep-alive>
+    <keep-alive exclude="Profile">
       <router-view/>
     </keep-alive>
   </div>

@@ -3602,3 +3602,30 @@ router.beforeEach(function (to,from,next) {
 
 只需要给主页的router-view加上keep-alive标签后，尽管组件被切换走了那么这个组件仍然是不会被销毁的，被切换回来的时候也不需要重新创建，因为它本来就没被销毁，一直都存在。
 
+## 66、keep-alive的include和exclude属性
+
+因为默认的keep-alive是将所有的router-view都保持活跃（不被销毁），但是有的时候可能会用到有的组件需要被销毁，有的组件需要不被销毁，所以就需要用到keep-alive的include和exclude属性。
+
+```vue
+<template>
+  <div id="app">
+
+    <!--去首页的超链接-->
+    <router-link to="/home" tag="button">主页</router-link>
+    <!--去关于的超链接-->
+    <router-link to="/about" tag="button">关于</router-link>
+
+    <router-link :to="'/user/'+userId" tag="button">用户</router-link>
+
+    <button @click="toProfile()">我的</button>
+
+    <!--显示内容-->
+    <keep-alive exclude="Profile">
+      <router-view/>
+    </keep-alive>
+  </div>
+</template>
+```
+
+在exclude里利用正则表达式匹配组件里的name属性，比如profile组件里的name是Profile，所以keep-alive里就排除掉Profile，意思就是Profile不保持活跃（会被销毁）。
+

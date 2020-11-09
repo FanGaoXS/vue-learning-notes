@@ -15,6 +15,13 @@
         age: this.$route.query.age,
       }
     },
+    // 生命周期函数：组件被创建后执行
+    created() {
+      console.log('Profile created');
+    },
+    destroyed() {
+      console.log('Profile destroyed');
+    }
   }
 </script>
 
