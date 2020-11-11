@@ -25,7 +25,11 @@ export default {
   name: 'App',
   data() {
     return {
-      userId: 11
+      userId: 11,
+      student: {
+        name: '测试',
+        age: 18
+      }
     }
   },
   methods: {
@@ -36,9 +40,11 @@ export default {
         // 传递的对象
         query:{
           name: '张三',
-          age: 18
+          age: 18,
+          // 传递student对象
+          student: this.student
         }
-      })
+      });
     }
   },
 }

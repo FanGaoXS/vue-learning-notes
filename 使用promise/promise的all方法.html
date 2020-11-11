@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+</body>
+<script src="../js/jquery-3.5.1.js"></script>
+<script>
+  Promise.all([
+
+    //promise1
+    new Promise(function (resolve,reject) {
+      $.ajax({// 请求1
+        success(res) {
+          resolve(res); //将请求1的结果传递给then
+        }
+      });
+    }),
+
+    //promise2
+    new Promise(function (resolve,reject) {
+      $.ajax({// 请求2
+        success(res) {
+          resolve(res); //将请求2的结果传递给then
+        }
+      });
+    })
+
+  ]).then(function (results) {
+    /*对promise数组的结果进行共同处理*/
+    console.log(results[0]);// promise1的成功结果
+    console.log(results[1]);// promise2的成功结果
+  });
+</script>
+</html>

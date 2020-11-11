@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+</body>
+<script src="../js/jquery-3.5.1.js"></script>
+<script>
+  new Promise(function (resolve,reject) {
+    $.ajax({ //请求一
+      success(res) {
+        resolve(res);// 利用promise1的then
+      },
+    });
+  }).then(function (res) {
+    // 拿到请求一的res并处理
+    // 发起请求二
+    return new Promise(function (resolve,reject) {
+      $.ajax({ //请求二
+        success(res) {
+          resolve(res);// 利用promise2的then
+        },
+      });
+    }).then(function () {
+      // 拿到请求二的res并处理
+      // 发起请求三
+      return new Promise(function (resolve,reject) {
+        $.ajax({ //请求三
+          success(res) {
+            resolve(res);// 利用promise3的then
+          },
+        });
+      }).then(function () {
+        /*异步3成功结果的处理*/
+      });
+    });
+  });
+</script>
+</html>

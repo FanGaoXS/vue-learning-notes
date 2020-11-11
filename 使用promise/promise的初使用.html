@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>promise的初使用</title>
+</head>
+<body>
+
+</body>
+<script src="../js/jquery-3.5.1.js"></script>
+<script>
+  new Promise(function (resolve, reject) {
+    $.ajax({
+        //请求的地址
+        url: 'http://172.16.0.95:8880/v0/loc/川A.1234B',
+        //请求类型
+        type: 'GET',
+        //异步开启
+        async :true,
+        //请求的参数
+        data: {},
+        //请求成功的回调函数
+        success(res) {
+            resolve(res);
+        },
+        //请求失败的回调函数
+        error(res) {
+            reject(res);
+        }
+    });
+  }).then(function (res) {
+    // 如果网络请求成功会执行以下代码
+    console.log('resolve',res);
+  }).catch(function (res) {
+    // 如果网络请求失败会执行以下代码
+    console.log('reject',res);
+  });
+
+  new Promise(function (resolve, reject) {
+
+    //异步体
+    $.ajax({
+      //请求的地址
+      url: '',
+      //请求类型
+      type: '',
+      //异步开启
+      async :true,
+      //请求的参数
+      data: {},
+      //请求成功的回调函数
+      success(res) {
+        resolve(res);// 调用resolve利用then函数来处理
+      },
+      //请求失败的回调函数
+      error(res) {
+        reject(res);// 调用reject利用catch函数来处理
+      }
+    });// ajax
+
+  }).then(function (res) {
+    // 异步成功结果处理
+    console.log(res);
+  }).catch(function (res) {
+    // 异步失败结果处理
+    console.log(res)
+  });
+
+
+
+
+</script>
+</html>
