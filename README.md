@@ -1995,7 +1995,7 @@ cmessage和cmovies就是子组件里props里的属性，就可以直接使用了
 </body>
 ```
 
-**Tips：**因为html里英文字母大小写是不敏感的，所以不支持驼峰命名的，但是vue里面支持，所以在html标签里使用到驼峰的地方就添加横杠`-`，比如`cMessage`就应该变成`c-message`。或者索性直接不使用驼峰命名。
+**Tips：**因为html里英文字母大小写是不敏感的，所以不支持驼峰命名的，但是vue里面支持，所以在html标签里使用到驼峰的地方就添加横杠`-`，比如`cMessage`就应该变成`c-message`。或者索性直接不使用驼峰命名。在父组件的使用子组件的标签上加上`v-bind:变量名1="变量名2"`来向子组件传递参数，子组件通过props和变量名1来获得参数。
 
 ## 32、父子组件之间通信（子传父利用$emit）
 
@@ -3628,4 +3628,234 @@ router.beforeEach(function (to,from,next) {
 ```
 
 在exclude里利用正则表达式匹配组件里的name属性，比如profile组件里的name是Profile，所以keep-alive里就排除掉Profile，意思就是Profile不保持活跃（会被销毁）。
+
+## 67、vue应用程序开发的状态管理模式vuex
+
+### vuex是什么？
+
+`VueX`是适用于在`Vue`项目开发时使用的状态管理工具。试想一下，如果在一个项目开发中频繁的使用组件传参的方式来同步`data`中的值，一旦项目变得很庞大，管理和维护这些值将是相当棘手的工作。为此，`Vue`为这些被多个组件频繁使用的值提供了一个统一管理的工具——`VueX`。在具有`VueX`的Vue项目中，我们只需要把这些值定义在VueX中，即可在整个Vue项目的组件中使用。就有点像java开发中的spring容器一样，我只需要把依赖注入进IoC容器里，然后再需要的地方注入就可以了。在vue里同样是一样的，假如有许多组件之间需要同步共同的状态信息，比如：用户登录状态、用户信息等。我们就无法在单一的某个组件里存放这些状态信息，而是转而放到另外一个类似全局对象里存放，而vuex就是这样一个官方插件。
+
+### 利用npm安装vuex插件
+
+```shell
+npm install vuex@3.0.1 --save
+```
+
+因为vuex会在开发和实际上线的时候都用到，所以--save直接保存而不需要-dev
+
+### 在src目录下创建store文件夹
+
+类似vue-router在src里创建store文件夹，并且在store文件夹里创建index.js
+
+### 在index.js里引入vuex并配置然后导出
+
+```js
+// 导入vue
+import Vue from "vue";
+// 导入vuex
+import Vuex from "vuex";
+
+// 利用Vue的use方法使用Vuex插件
+Vue.use(Vuex);
+
+// 利用Vuex.Store类创建store对象
+const store=new Vuex.Store({
+  state: {},
+  mutations: {},
+  actions: {},
+  getters: {},
+  modules: {}
+});
+
+// 导出store对象
+export default store;
+
+```
+
+跟vue-router类似，同样是导入了Vuex后再利用Vue的use方法使用Vuex插件。需要注意的是Vuex是利用Vuex.Store类来创建store对象的，并且导出。在这个类里，我们需要定义5个对象，分别是：state、mutations、actions、getters、moduls。
+
+state：存放状态信息（存放变量），同时这个变量是响应式的。
+
+mutations：存放对状态信息操作的事件；
+
+下面以对一个变量counter进行操作的例子：
+
+```js
+const store=new Vuex.Store({
+  // 存放状态信息
+  state: {
+    counter: 0
+  },
+  // 对state进行操作的事件
+  mutations: {
+    // 对counter+1
+    increment(state){
+      state.counter++;
+    },
+    // 对counter-1
+    decrement(state){
+      state.counter--;
+    }
+  },
+});
+```
+
+利用increment和decrement对counter进行自增或者自减操作。
+
+**需要注意的是因为state是可以直接在mutations的方法直接作为形参的，所以直接将state写在函数里就可以了。**
+
+### 在main.js里引入vuex
+
+```js
+import Vue from 'vue'
+import App from './App'
+// 引入store
+import store from "./store";
+
+Vue.config.productionTip = false
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  // 注册store
+  store,
+  render: h => h(App)
+})
+
+```
+
+先利用import引入store，然后在Vue实例里注册store。
+
+### 利用$store.state来获取变量
+
+```vue
+<template>
+  <div id="home">
+    <h2>我是home页</h2>
+    <h2>{{$store.state.counter}}</h2>
+  </div>
+</template>
+```
+
+直接利用$store.state.counter获取state存放的全局变量
+
+### 利用this.$store.commit('函数名')来调用函数
+
+```vue
+<template>
+  <div id="home">
+    <h2>我是home页</h2>
+    <h2>{{$store.state.counter}}</h2>
+    <button @click="increment()">+</button>
+    <button @click="decrement()">-</button>
+  </div>
+</template>
+
+<script>
+  export default {
+    name: "Home",
+    methods: {
+      // 调用store的mutations里的increment方法
+      increment() {
+        this.$store.commit('increment')
+      },
+      decrement(){
+        // 调用store的mutations里的decrement方法
+        this.$store.commit('decrement');
+      }
+    },
+  }
+</script>
+```
+
+通过在组件的methods里定义好方法，然后在方法里利用`this.$store.commit('mutations里对应的函数名')`来调用全局函数。
+
+## 68、利用devtools来跟踪操作
+
+首先，需要明白Vuex的三大状态：Actions、Mutations和State。
+
+Actions：异步处理。
+
+State：状态信息（变量）。
+
+Mutations：对状态信息的操作。
+
+同时Vuex的亮点就是可以devtools来跟踪Mutations的操作。假如组件多了之后，你根本无法知道到底是哪一个组件对这个变量进行了操作，所以vue开发了devtools这样一个浏览器插件，来使得我们开发人员更加容易观察到mutations里的函数对state里的变量的操作情况。
+
+![image-20201112161649019](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201112161649019.png)
+
+其实本来操作函数可以同获取state里全局变量一样使用：
+
+```js
+this.$store.mutations.increment();
+```
+
+来直接调用的，但是这样的问题就是直接利用组件来操作，这样就没有利用commit方法来操作函数，这样就导致无法利用devtools来跟踪函数的使用情况。所以官方推荐利用：
+
+```js
+$store.state					//获取变量
+this.$store.commit('函数名')	   //执行函数
+```
+
+### devtools是什么？
+
+devtools是vue开发的一款浏览器插件，方便对vuex里commit提交的函数进行跟踪。因为一旦组件多了之后根本不知道到底是哪一个组件对state里的变量进行了操作，给我们开发带来了很大的麻烦，devtools就是来解决上述问题的官方浏览器插件。
+
+### 需要chrome插件商店进行安装
+
+![image-20201112163902205](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201112163902205.png)
+
+## 69、store中的getters
+
+store中的getters和vue组件的computed计算属性类似，都是讲state中的变量或者data中的变量进行进一步计算然后返回。同样在gettes里定义的时候需要带上state参数：
+
+```js
+  getters: {
+    // 年龄大于20岁的学生
+    moreStudent(state){
+      let studentList = state.studentList;
+      let returnStudentList=[];
+      for (let i = 0; i < studentList.length; i++) {
+        if (studentList[i].age>=20){
+          returnStudentList.push(studentList[i]);
+        }
+      }
+      return returnStudentList;
+    }
+  },
+```
+
+然后在需要的地方使用的时候就利用：
+
+```js
+    {{$store.getters.moreStudent}}
+```
+
+store中的getters就类似vue中的computed。
+
+## 70、store中的mutations传递参数
+
+因为函数肯定会涉及到参数传递，所以mutations同样也会需要接收参数，在mutations里接收参数就是直接在state后面加参数就可以了：
+
+```js
+  mutations: {
+    incrementCount(state,count){
+      state.counter+=count;
+    }
+  },
+```
+
+然后再组件里利用：
+
+```js
+  methods: {
+      incrementCount(count){
+        this.$store.commit('incrementCount',count);
+      }
+    },
+```
+
+commit方法里，另外跟上需要传递的参数就可以了，并且后面跟上的参数，在vue里面叫做payload（载荷）。
+
+store中的mutations就类似vue中的methods
 

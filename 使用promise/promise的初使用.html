@@ -66,7 +66,59 @@
     console.log(res)
   });
 
+  Promise.all([
 
+      // 请求一
+      new Promise(function (resolve, reject) {
+        $.ajax({
+          //请求的地址
+          url: 'http://172.16.0.95:8880/v0/loc/川A.1234B',
+          //请求类型
+          type: 'GET',
+          //异步开启
+          async :true,
+          //请求的参数
+          data: {
+
+          },
+          //请求成功的回调函数
+          success(res) {
+            resolve(res);
+          },
+          //请求失败的回调函数
+          error(res) {
+            reject(res);
+          }
+        });
+      }),
+
+      //请求二
+      new Promise(function (resolve,reject) {
+        $.ajax({
+          //请求的地址
+          url: 'http://172.16.0.95:8880/v0/loc/川A.1234B/2020-09-28',
+          //请求类型
+          type: 'GET',
+          //异步开启
+          async :true,
+          //请求的参数
+          data: {
+
+          },
+          //请求成功的回调函数
+          success(res) {
+            resolve(res);
+          },
+          //请求失败的回调函数
+          error(res) {
+            reject(res);
+          }
+        });
+      })
+
+  ]).then(function (results) {
+    console.log(results);
+  })
 
 
 </script>
