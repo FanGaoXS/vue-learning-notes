@@ -3737,7 +3737,9 @@ new Vue({
 </template>
 ```
 
-直接利用$store.state.counter获取state存放的全局变量
+直接利用$store.state.counter获取state存放的全局变量。
+
+store中的state就类似vue中的data
 
 ### 利用this.$store.commit('函数名')来调用函数
 
@@ -3848,7 +3850,7 @@ store中的getters就类似vue中的computed。
 然后再组件里利用：
 
 ```js
-  methods: {
+    methods: {
       incrementCount(count){
         this.$store.commit('incrementCount',count);
       }
@@ -3857,5 +3859,71 @@ store中的getters就类似vue中的computed。
 
 commit方法里，另外跟上需要传递的参数就可以了，并且后面跟上的参数，在vue里面叫做payload（载荷）。
 
-store中的mutations就类似vue中的methods
+以上方法仅使用于传递的参数只有一个的情况下，假如需要传递的参数是两个及其以上的情况的话，那么就需要采用payload对象的方式进行传递了：
+
+```js
+	incrementCount(){
+        let count=10;
+        let test='测试';
+        this.$store.commit({
+          type: 'incrementCount',
+          count: count,
+          test: test
+        });
+     }
+```
+
+commit()方法里传递一个payload对象，在payload对象里第一个参数是type（即是mutations里函数的函数名），后面的参数就是想要传递的参数以`键名:键值`的方式进行传递，然后在mutations里就利用payload来接收：
+
+```js
+	incrementCount(state,payload){
+      console.log(payload);
+      console.log(payload.type);
+      console.log(payload.count);
+      console.log(payload.test);
+      state.counter+=payload.count;
+    }
+```
+
+payload会拿到整个payload对象，payload.type就是刚刚传递的type，count和test同理。
+
+更倾向于推荐采用直接传递payload对象的方式进行传递，这样易于扩展，没有只能传递一个参数的局限性。
+
+store中的mutations就和vue中的methods类似。
+
+## 71、响应式的给state里的对象添加属性或者删除属性
+
+什么是响应式？响应式就是你修改了对象里的某个属性之后页面就会跟着立马刷新就是响应式。vue内部已经做好了监听，只要你修改了对应的数据那么页面上的内容立马就会跟着刷新。但是前提是你必须利用vue给的规则来修改页面的数据。比如：
+
+```js
+ state.student.age=18;
+```
+
+这样确实能够修改student对象里的age属性，但是做不到响应式（也就是页面上不会做到立马刷新），而需要采用vue建议使用的：
+
+```js
+Vue.set(Object: Object,key:string|number,vaule)
+```
+
+第一个参数是你要修改的对象，第二个参数是你要修改的属性名，第三个参数是你要修改的属性值。比如：
+
+```js
+Vue.set(student,'age',18)
+```
+
+就是将student对象的age属性改为18。添加也是同理，如果你需要给这个对象添加一个它原本不存在的属性也是这样。
+
+删除对象里的某个属性则是采用：
+
+```js
+Vue.delete(Object: Object,key:string|number)
+```
+
+第一个参数是你要删除的对象，第二个参数是你要删除的对象里的属性名。比如：
+
+```js
+Vue.delete(student,'age')
+```
+
+就是将student中的age属性删除。
 

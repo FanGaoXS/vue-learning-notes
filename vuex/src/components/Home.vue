@@ -5,6 +5,9 @@
     <button @click="increment()">+</button>
     <button @click="decrement()">-</button>
     <h2>{{$store.getters.moreStudent}}</h2>
+    <h2>{{$store.state.studentList}}</h2>
+    <button @click="incrementCount()">测试</button>
+
   </div>
 </template>
 
@@ -20,9 +23,16 @@
         // 调用store的mutations里的decrement方法
         this.$store.commit('decrement');
       },
-      incrementCount(count){
-        this.$store.commit('incrementCount',count);
-      }
+      incrementCount(){
+        let count=10;
+        let test='测试';
+        this.$store.commit({
+          type: 'incrementCount',
+          count: count,
+          test: test
+        });
+      },
+
     },
   }
 </script>
