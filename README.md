@@ -3629,7 +3629,7 @@ router.beforeEach(function (to,from,next) {
 
 在exclude里利用正则表达式匹配组件里的name属性，比如profile组件里的name是Profile，所以keep-alive里就排除掉Profile，意思就是Profile不保持活跃（会被销毁）。
 
-## 67、vue应用程序开发的状态管理模式vuex
+## 67、vue应用程序开发的状态管理模式vuex和state
 
 ### vuex是什么？
 
@@ -3835,7 +3835,7 @@ store中的getters和vue组件的computed计算属性类似，都是讲state中�
 
 store中的getters就类似vue中的computed。
 
-## 70、store中的mutations传递参数
+## 70、store中的mutations和参数传递的两种方式
 
 因为函数肯定会涉及到参数传递，所以mutations同样也会需要接收参数，在mutations里接收参数就是直接在state后面加参数就可以了：
 
@@ -3893,13 +3893,23 @@ store中的mutations就和vue中的methods类似。
 
 ## 71、响应式的给state里的对象添加属性或者删除属性
 
-什么是响应式？响应式就是你修改了对象里的某个属性之后页面就会跟着立马刷新就是响应式。vue内部已经做好了监听，只要你修改了对应的数据那么页面上的内容立马就会跟着刷新。但是前提是你必须利用vue给的规则来修改页面的数据。比如：
+什么是响应式？响应式就是你修改了对象里的某个属性之后页面就会跟着立马刷新就是响应式。vue内部已经做好了监听，只要你修改了对应的数据那么页面上的内容立马就会跟着刷新。但是前提是你必须利用vue给的规则来修改页面的数据。规则就是：
+
+1. 提前在store里初始化好所需要属性；
+
+2. 在给state中对的对象添加**新**属性时，需要用以下方式：
+
+   ```js
+   Vue.set(Object: Object,key:string|number,vaule)
+   ```
+
+如果student对象里原本就存在age属性，那么这种修改方式确实能够做到。假如你并没有给student对象里初始化age属性，那么这种方式就不会生效，而必须采用`Vue.set()`的方法才能生效。
 
 ```js
  state.student.age=18;
 ```
 
-这样确实能够修改student对象里的age属性，但是做不到响应式（也就是页面上不会做到立马刷新），而需要采用vue建议使用的：
+
 
 ```js
 Vue.set(Object: Object,key:string|number,vaule)
@@ -3926,4 +3936,309 @@ Vue.delete(student,'age')
 ```
 
 就是将student中的age属性删除。
+
+## 72、store中的actions执行异步操作
+
+因为devtools的原因，devtools只能跟踪mutations的同步操作，不能跟踪异步操作。而vuex官方推荐异步操作定义在actions里。所以mutations和actions的区别就是，mutations里定义同步操作，actions里定义异步操作。
+
+```js
+  actions: {
+    // 异步修改学生信息
+    actionUpdateStudentInfo(context,payload){
+      console.log('actions的payload->',payload);
+      console.log('actions的payload的type->',payload.type);
+      console.log('actions的payload的params->',payload.student);
+     // 利用setTimeout（延时1秒）模拟异步
+     setTimeout(function () {
+       // 调用mutations里的操作
+       context.commit({
+         type: 'updateStudentInfo',
+         student: payload.student
+       });
+       // 异步成功后的回调函数
+       payload.success();
+     },1000);
+    }
+  },
+```
+
+需要注意的时，actions里的函数的参数必须有context，payload。context是上下文对象，payload是组件里传递过来的参数。利用setTimeout()模拟延时异步操作，然后在setTimeout里利用`context.commit()`向mutations里发起提交，然后调用mutations里的同步方法（因为actions里拿不到state对象，所以想要操作state中的数据就必须向mutations里发起提交），同样的，利用context.commit()，里面的参数对象就是`{type: 'mutations里的函数名',需要传递的参数}`。
+
+然后在组件里同样是利用`this.$store.dispatch()`来调用actions里的方法：
+
+```js
+      actionUpdateStudentInfo(){
+        let student={
+          name: 'test',
+          age: 22,
+        };
+        this.$store.dispatch({
+          // type对应actions里的异步操作名
+          type: 'actionUpdateStudentInfo',
+          // student是要传递的对象
+          student: student,
+          // success是异步成功后调用的函数
+          success: function () {
+            alert('异步修改学生信息成功');
+          }
+        });
+      }
+```
+
+同样的，传递的依旧是一个对象参数：
+
+```js
+{
+    type: 'actions里的函数名',
+    传递的参数,
+    自定义的成功后的回调函数（可有可无）
+}
+```
+
+如果需要使用到成功后的回调函数，那么就直接在actions里调用payload里的success方法就可以了。（最好定义一个成功的回调函数，以方便通知异步成功）
+
+## 73、mutations和actions的区别
+
+mutations里定义的是同步操作，actions里定义的是异步操作;
+
+mutations定义的函数的参数需要有state和payload（因为mutations允许操作state）。actions定义的函数的参数有context和payload（因为actions不能操作state，只有利用context获得mutations里的同步方法）；
+
+组件里使用mutations里的函数是直接利用`this.$store.commit()`调用（并且传递对象，对象里须定义type和参数），但是组件里使用actions里的函数是是直接利用`this.$store.dispatch()`调用（并且传递对象，对象里须定义type和参数），然后在actions里利用`context.commit()`调用mutations里的方法（并且传递对象，对象里须定义type和参数）；
+
+相当于使用mutations只需要利用commit调用指定的mutations里的函数就可以了。但是actions需要利用dispatch调用指定的actions里的函数，但是在actions里的函数里需用利用commit调用mutations里的函数。
+
+同步操作：commit->mutations。
+
+异步操作：dispatch->actions->commit->mutations。
+
+## 74、store中的mudules
+
+modules实际上就是相当于在store里再套一个store，然后这个store拥有自己的state、getters、mutations、actions和mudules。
+
+```js
+const store=new Vuex.Store({
+  // 存放状态信息
+  state: {},
+  // 对state进行操作的事件
+  mutations: {},
+  // 异步操作事件
+  actions: {},
+  // 类似计算属性
+  getters: {},
+  // 新的模块（子模块）
+  modules: {
+      modulesA: {
+          state: {},
+          mutations: {},
+          actions: {},
+          getters: {},
+      }
+  }
+});
+```
+
+为了代码美观，我们可以将子模块对象提到外面（先在外面定义好moduleA和moduleB，然后再在store里声明就好了）：
+
+```js
+// moduleA
+const moduleA={
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {}
+}
+
+// moduleB
+const moduleB={
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {}
+}
+
+const store=new Vuex.Store({
+  // 存放状态信息
+  state: {},
+  // 对state进行操作的事件
+  mutations: {},
+  // 异步操作事件
+  actions: {},
+  // 类似计算属性
+  getters: {},
+  // 新的模块（子模块）
+  modules: {
+    moduleA,
+    moduleB
+  }
+});
+```
+
+## 75、module中的state
+
+module中同样可以定义属于module自己的state：
+
+```js
+// moduleA
+const moduleA={
+  state: {
+    name: '我是moduleA的name'
+  },
+  getters: {},
+  mutations: {},
+  actions: {}
+}
+```
+
+需要注意的是在组件里使用的时候是利用：
+
+```vue
+    <h2>{{$store.state.moduleA.name}}</h2>
+```
+
+这里特殊的原因是因为在vue内部里是将根state和模块里state归并在一起的，但是模块里的state又是属于moduleA里的：
+
+![image-20201115233448699](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201115233448699.png)
+
+观察到counter和moduleA是并列的，name又是属于moduleA的，所以需要使用`$store.state.moduleA.name`。
+
+## 76、module中的getters
+
+module中同样也可以定义属于module自己的getters：
+
+```js
+// moduleA
+const moduleA={
+  state: {
+    name: '我是moduleA的name'
+  },
+  getters: {
+    aName(state){
+      return state.name+'moduleA的getters';
+    }
+  },
+  mutations: {},
+  actions: {}
+}
+```
+
+需要注意的是在组件里面使用是利用：
+
+```vue
+    <h2>{{$store.getters.aName}}</h2>
+```
+
+在vue内部也是将所有的getter都归并到一起的，但是getters并没有像state那样需要加上模块名字，而是直接getter的名字。所以尽量子模块和根模块的getter不要重名。同样的：
+
+```js
+// moduleA
+const moduleA={
+  state: {
+    name: '我是moduleA的name'
+  },
+  getters: {
+    aName(state){
+      return state.name+'moduleA的getters';
+    },
+    bName(state,getters,rootState){
+      return getters.aName+rootState.counter;
+    }
+  },
+  mutations: {},
+  actions: {}
+}
+```
+
+还可以在getter里利用第二个参数getters获得自己内部的getters，以及第三个参数rootState获得根store的state。
+
+## 77、module中的mutations
+
+module中也可以定义mutations：
+
+```js
+// moduleA
+const moduleA={
+  state: {
+    name: '我是moduleA的name'
+  },
+  getters: {
+    aName(state){
+      return state.name+'moduleA的getters';
+    },
+    bName(state,getters,rootState){
+      return getters.aName+rootState.counter;
+    }
+  },
+  mutations: {
+    updateName(state){
+     state.name='我是修改后的moduleA的name';
+    }
+  },
+  actions: {}
+}
+```
+
+同样的，需要在组件里利用commit：
+
+```js
+methods: {
+  updateName() {
+    this.$store.commit({
+      type: 'updateName'
+    });
+  }
+},
+```
+
+在vue内部依旧是根模块和子模块的所有motations都是归并到一起的，所以尽量不要重名。
+
+## 78、module中的actions
+
+同样，在module里也可以使用actions：
+
+```js
+// moduleA
+const moduleA={
+  state: {
+    name: '我是moduleA的name'
+  },
+  getters: {
+    aName(state){
+      return state.name+'moduleA的getters';
+    },
+    bName(state,getters,rootState){
+      return getters.aName+rootState.counter;
+    }
+  },
+  mutations: {
+    updateName(state){
+     state.name='我是修改后的moduleA的name';
+    }
+  },
+  actions: {
+    asyncUpdateName(context,payload){
+      setTimeout(function () {
+        context.commit({
+          type: 'updateName',
+        });
+        payload.success();
+      },1000);
+    }
+  }
+}
+```
+
+同样的也是需要context和payload参数，同样是利用context的commit方法调用mutations里的函数（只能调用自身的）。然后在组件里也是利用dispatch来使用异步函数：
+
+```js
+	  asyncUpdateName(){
+        this.$store.dispatch({
+          type: 'asyncUpdateName',
+          success:function () {
+            alert('异步修改名字成功');
+          }
+        })
+      }
+```
+
+所以，可以得知：actions在vue内部也是所有都归并在一起的。
 

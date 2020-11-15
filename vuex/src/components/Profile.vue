@@ -7,6 +7,10 @@
     <button @click="deleteStudent()">删除学生</button>
     <button @click="insertStudentInfo()">增加所有学生的性别</button>
     <button @click="deleteStudentInfo()">删除所有学生的年龄</button>
+    <hr>
+    <h2>{{$store.state.student}}</h2>
+    <button @click="updateStudentInfo()">同步修改学生信息</button>
+    <button @click="actionUpdateStudentInfo()">异步修改学生信息</button>
   </div>
 </template>
 
@@ -45,6 +49,34 @@
           type: 'deleteStudentInfo',
         })
       },
+
+      updateStudentInfo(){
+        let student={
+          name: 'test',
+          age: 22,
+        };
+        this.$store.commit({
+          type: 'updateStudentInfo',
+          student: student
+        });
+      },
+
+      actionUpdateStudentInfo(){
+        let student={
+          name: 'test',
+          age: 22,
+        };
+        this.$store.dispatch({
+          // type对应actions里的异步操作名
+          type: 'actionUpdateStudentInfo',
+          // student是要传递的对象
+          student: student,
+          // success是异步成功后调用的函数
+          success: function () {
+            alert('异步修改学生信息成功');
+          }
+        });
+      }
 
     },
   }

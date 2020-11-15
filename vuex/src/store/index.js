@@ -6,6 +6,44 @@ import Vuex from "vuex";
 // 利用Vue的use方法使用Vuex插件
 Vue.use(Vuex);
 
+// moduleA
+const moduleA={
+  state: {
+    name: '我是moduleA的name'
+  },
+  getters: {
+    aName(state){
+      return state.name+'moduleA的getters';
+    },
+    bName(state,getters,rootState){
+      return getters.aName+rootState.counter;
+    }
+  },
+  mutations: {
+    updateName(state){
+     state.name='我是修改后的moduleA的name';
+    }
+  },
+  actions: {
+    asyncUpdateName(context,payload){
+      setTimeout(function () {
+        context.commit({
+          type: 'updateName',
+        });
+        payload.success();
+      },1000);
+    }
+  }
+}
+
+// moduleB
+const moduleB={
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {}
+}
+
 // 利用Vuex.Store类创建store对象
 const store=new Vuex.Store({
   // 存放状态信息
@@ -16,7 +54,11 @@ const store=new Vuex.Store({
       { name: '李四', age: 22},
       { name: '王麻子', age: 24},
       { name: 'wqk', age: 30},
-    ]
+    ],
+    student: {
+      name: 'wqk',
+      age: 20,
+    }
   },
   // 对state进行操作的事件
   mutations: {
@@ -63,9 +105,33 @@ const store=new Vuex.Store({
       for (let i = 0; i < studentList.length; i++) {
         Vue.delete(studentList[i],'age');
       }
+    },
+    // 同步修改学生信息
+    updateStudentInfo(state,payload){
+      console.log('mutations的payload->',payload);
+      console.log('mutations的payload的type->',payload.type);
+      console.log('mutations的payload的params->',payload.student);
+      state.student=payload.student;
     }
   },
-  actions: {},
+  actions: {
+    // 异步修改学生信息
+    actionUpdateStudentInfo(context,payload){
+      console.log('actions的payload->',payload);
+      console.log('actions的payload的type->',payload.type);
+      console.log('actions的payload的params->',payload.student);
+     // 利用setTimeout（延时1秒）模拟异步
+     setTimeout(function () {
+       // 调用mutations里的操作
+       context.commit({
+         type: 'updateStudentInfo',
+         student: payload.student
+       });
+       // 异步成功后的回调函数
+       payload.success();
+     },1000);
+    }
+  },
   getters: {
     // 年龄大于20岁的学生
     moreStudent(state){
@@ -79,7 +145,10 @@ const store=new Vuex.Store({
       return returnStudentList;
     }
   },
-  modules: {}
+  modules: {
+    moduleA,
+    moduleB
+  }
 });
 
 // 导出store对象
