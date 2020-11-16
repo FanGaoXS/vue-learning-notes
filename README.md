@@ -4242,3 +4242,311 @@ const moduleA={
 
 所以，可以得知：actions在vue内部也是所有都归并在一起的。
 
+## 79、利用模块化思想抽离store
+
+在store的index.js因为actions、mutations、getters、modules这些混在一起导致看起来非常的冗余，所以我们可以尝试将它们抽离出去（state不建议抽离）。所以我们需要新建actions.js、mutations.js、getters.js，modules的话就新建一个文件夹：
+
+![image-20201116121658512](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201116121658512.png)
+
+分别将index.js里的actions、getters、mutations抽离出来，然后再导出，再在index.js里导入：
+
+actions.js：
+
+```js
+// actions
+const actions={
+  // 异步修改学生信息
+  actionUpdateStudentInfo(context,payload){
+    console.log('actions的payload->',payload);
+    console.log('actions的payload的type->',payload.type);
+    console.log('actions的payload的params->',payload.student);
+    // 利用setTimeout（延时1秒）模拟异步
+    setTimeout(function () {
+      // 调用mutations里的操作
+      context.commit({
+        type: 'updateStudentInfo',
+        student: payload.student
+      });
+      // 异步成功后的回调函数
+      payload.success();
+    },1000);
+  }
+};
+// 导出actions
+export default actions;
+
+```
+
+mutations.js：
+
+```js
+// mutations
+import Vue from "vue";
+
+const mutations={
+  // 对counter+1
+  increment(state){
+    state.counter++;
+  },
+  // 对counter-1
+  decrement(state){
+    state.counter--;
+  },
+  incrementCount(state,payload){
+    console.log(payload);
+    console.log(payload.type);
+    console.log(payload.count);
+    console.log(payload.test);
+    state.counter+=payload.count;
+  },
+  insertStudent(state,payload){
+    console.log('payload->',payload);
+    console.log('type->',payload.type);
+    console.log('student->',payload.student);
+    state.studentList.push(payload.student);
+  },
+  deleteStudent(state,payload){
+    console.log('payload->',payload);
+    console.log('type->',payload.type);
+    state.studentList.pop();
+  },
+  insertStudentInfo(state,payload){
+    console.log('payload->',payload);
+    console.log('type->',payload.type);
+    console.log('sex->',payload.sex);
+    let sex=payload.sex;
+    let studentList=state.studentList;
+    for (let i = 0; i < studentList.length; i++) {
+      Vue.set(studentList[i],'sex',sex);
+    }
+  },
+  deleteStudentInfo(state,payload){
+    console.log('payload->',payload);
+    console.log('type->',payload.type);
+    let studentList=state.studentList;
+    for (let i = 0; i < studentList.length; i++) {
+      Vue.delete(studentList[i],'age');
+    }
+  },
+  // 同步修改学生信息
+  updateStudentInfo(state,payload){
+    console.log('mutations的payload->',payload);
+    console.log('mutations的payload的type->',payload.type);
+    console.log('mutations的payload的params->',payload.student);
+    state.student=payload.student;
+  }
+};
+// 导出mutations
+export default mutations;
+
+```
+
+getters.js：
+
+```js
+// getters
+const getters={
+  // 年龄大于20岁的学生
+  moreStudent(state){
+    let studentList = state.studentList;
+    let returnStudentList=[];
+    for (let i = 0; i < studentList.length; i++) {
+      if (studentList[i].age>=20){
+        returnStudentList.push(studentList[i]);
+      }
+    }
+    return returnStudentList;
+  }
+};
+// 导出getters
+export default getters;
+
+```
+
+moduleA文件夹下的moduleA.js：
+
+```js
+// moduleA
+const moduleA={
+  state: {
+    name: '我是moduleA的name'
+  },
+  getters: {
+    aName(state){
+      return state.name+'moduleA的getters';
+    },
+    bName(state,getters,rootState){
+      return getters.aName+rootState.counter;
+    }
+  },
+  mutations: {
+    updateName(state){
+      state.name='我是修改后的moduleA的name';
+    }
+  },
+  actions: {
+    asyncUpdateName(context,payload){
+      setTimeout(function () {
+        context.commit({
+          type: 'updateName',
+        });
+        payload.success();
+      },1000);
+    }
+  }
+};
+// 将moduleA导出
+export default moduleA;
+
+```
+
+moduleB文件夹下的moduleB.js：
+
+```js
+// moduleB
+const moduleB={
+  state: {},
+  getters: {},
+  mutations: {},
+  actions: {}
+};
+// 将moduleB导出
+export default moduleB;
+
+```
+
+然后再在index.js里集中导入：
+
+```js
+// 导入store的actions、mutations、getters
+import actions from "./actions";
+import mutations from "./mutations";
+import getters from "./getters";
+
+// 导入store的moduleA和moduleB
+import moduleA from "./moduleA/moduleA";
+import moduleB from "./moduleB/moduleB";
+```
+
+最后在index.js里的store里声明：
+
+```js
+// 利用Vuex.Store类创建store对象
+const store=new Vuex.Store({
+  // 存放状态信息
+  state: {
+    counter: 0,
+    studentList: [
+      { name: '张三', age: 18},
+      { name: '李四', age: 22},
+      { name: '王麻子', age: 24},
+      { name: 'wqk', age: 30},
+    ],
+    student: {
+      name: 'wqk',
+      age: 20,
+    }
+  },
+  actions,
+  mutations,
+  getters,
+  modules: {
+    moduleA,
+    moduleB
+  }
+});
+```
+
+所有抽离的思路就是，将它们写在另外的js文件里，然后再导出，最后在需要的地方导入就可以了。
+
+## 80、axios的基本使用
+
+axios是一个基于promise的用于浏览器和node.js的HTTP客户端，比基于XMR的ajax更先进并且实用。
+
+1. 利用npm安装axios依赖
+
+   ```shell
+   npm install axios@0.18.0 --save
+   ```
+
+   因为我们不仅会在开发时用到它，在项目实际上线时也会用到。所以就需要添加--save参数
+
+2. 在js里导入axios
+
+   ```js
+   // 导入axios
+   import axios from "axios";
+   ```
+
+   因为axios是一个第三方库并不是一个vue官方插件，所以就不需要用Vue.use()来全局使用它。
+
+3. axios的基本使用
+
+   ```js
+   axios().then().catch();
+   ```
+
+   因为axios是基于promise的，所以axios()是网络请求体，then()是成功后的回调函数，catch()是失败后的回调函数。即：
+
+   ```js
+   axios({
+     // 请求的url
+     url: '',
+     // 请求的方式（默认是GET）
+     method: 'GET',
+     // 请求的参数
+     params: {
+   
+     }
+   }).then(function (res) {
+     /*成功后的回调函数*/
+     console.log(res);
+   }).catch(function (res) {
+     /*失败后的回调函数*/
+   });
+   ```
+
+   axios里需要传递一个参数对象，对象里需要url、method、params等属性。then和catch里需要的参数是函数。
+
+## 81、axios发送并发请求
+
+因为axios是基于promise的，所以和promise.all()类似，axios也可以利用axios.all()发送多个请求然后统一获取一个结果：
+
+```js
+axios.all([
+  axios(),
+  axios()
+]).then(function (results) {
+  console.log(results[0]);
+  console.log(results[1]);
+})
+```
+
+需要在axios.all()里传递axios数组。同样的，在then里获取分别的结果results数组然后进行统一处理，results[0]就是第一个axios的结果，results[1]就是第二个axios的结果。
+
+```js
+// 并发请求
+axios.all([
+
+  axios({
+    url: '',
+    method: '',
+    params: {
+
+    }
+  }),
+
+  axios({
+    url: '',
+    method: '',
+    params: {
+
+    }
+  })
+
+]).then(function (results) {
+  console.log(results[0]);
+  console.log(results[1]);
+});
+```
+
