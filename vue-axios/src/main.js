@@ -29,11 +29,14 @@ new Vue({
   /!*失败后的回调函数*!/
 });*/
 
+/*// 利用axios.defaults来配置相关默认配置（全局配置）
+axios.defaults.baseURL='https://car.blctek.com:8443';
+
 // 并发请求
 axios.all([
 
   axios({
-    url: 'https://car.blctek.com:8443/v0/loc/川A.1234B',
+    url: '/v0/loc/川A.1234B',
     method: 'GET',
     params: {
 
@@ -41,12 +44,41 @@ axios.all([
   }),
 
   axios({
-    url: 'https://car.blctek.com:8443/v0/loc/川A.1234B/2020-09-28',
+    url: '/v0/loc/川A.1234B/2020-09-28',
     method: 'GET',
     params: {
 
     }
   })
+
+]).then(function (results) {
+  console.log(results[0]);
+  console.log(results[1]);
+});*/
+
+
+
+
+
+axios.all([
+
+  axios({
+    baseURL: 'https://car.blctek.com:8443',
+    url: '/v0/loc/川A.1234B',
+    method: 'GET',
+    params: {
+
+    }
+  }),
+
+  axios({
+    baseURL: 'https://car.blctek.com:8443',
+    url: '/v0/loc/川A.1234B/2020-09-28',
+    method: 'GET',
+    params: {
+
+    }
+  }),
 
 ]).then(function (results) {
   console.log(results[0]);

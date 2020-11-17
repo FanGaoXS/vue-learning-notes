@@ -4550,3 +4550,129 @@ axios.all([
 });
 ```
 
+## 82、axios的配置信息
+
+其实在axiox()需要的对象参数是一个config参数，意思就是需要给axios传递配置信息，常见的axios的配置信息如下：
+
+```js
+{
+  // `url` 是用于请求的服务器 URL
+  url: '/user',
+
+  // `method` 是创建请求时使用的方法
+  method: 'get', // default
+
+  // `baseURL` 将自动加在 `url` 前面，除非 `url` 是一个绝对 URL。
+  // 它可以通过设置一个 `baseURL` 便于为 axios 实例的方法传递相对 URL
+  baseURL: 'https://some-domain.com/api/',
+      
+  // `headers` 是即将被发送的自定义请求头
+  headers: {'X-Requested-With': 'XMLHttpRequest'},
+
+  // `params` 是即将与请求一起发送的 URL 参数
+  // 必须是一个无格式对象(plain object)或 URLSearchParams 对象
+  params: {
+    ID: 12345
+  },
+      
+  // `data` 是作为请求主体被发送的数据
+  // 只适用于这些请求方法 'PUT', 'POST', 和 'PATCH'
+  // 在没有设置 `transformRequest` 时，必须是以下类型之一：
+  // - string, plain object, ArrayBuffer, ArrayBufferView, URLSearchParams
+  // - 浏览器专属：FormData, File, Blob
+  // - Node 专属： Stream
+  data: {
+    firstName: 'Fred'
+  },
+
+  // `timeout` 指定请求超时的毫秒数(0 表示无超时时间)
+  // 如果请求话费了超过 `timeout` 的时间，请求将被中断
+  timeout: 1000,
+      
+   // `responseType` 表示服务器响应的数据类型，可以是 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
+  responseType: 'json', // default
+
+  // `responseEncoding` indicates encoding to use for decoding responses
+  // Note: Ignored for `responseType` of 'stream' or client-side requests
+  responseEncoding: 'utf8', // default
+  
+}
+```
+
+baseURL就是请求的url前缀，比如说我原本的url请求是：
+
+```js
+url: 'https://www.baidu.com/api'
+```
+
+我就可以利用baseURL来分割：
+
+```js
+baseURL: 'https://www.baidu.com'
+url: 'api'
+```
+
+同时需要注意的是因为GET请求的特点是从url里获取参数，而POST请求则是通过request body来传递参数。所以当method为get是需要用params传递参数，而method为post是需要用data来传递参数。
+
+同时axios还支持统一配置默认的baseURL或者headers：
+
+```js
+// 利用axios.defaults来配置相关默认配置（全局配置）
+axios.defaults.baseURL='https:/www.baidu.com';
+
+// 并发请求
+axios.all([
+
+  axios({
+    url: 'api1',
+    method: 'GET',
+    params: {
+
+    }
+  }),
+
+  axios({
+    url: 'api2',
+    method: 'GET',
+    params: {
+
+    }
+  })
+
+]).then(function (results) {
+  console.log(results[0]);
+  console.log(results[1]);
+});
+```
+
+等价于：
+
+```js
+axios.all([
+
+  axios({
+    baseURL: 'https://www.baidu.com',
+    url: 'api1',
+    method: 'GET',
+    params: {
+
+    }
+  }),
+
+  axios({
+    baseURL: 'https://www.baidu.com',
+    url: 'api2',
+    method: 'GET',
+    params: {
+
+    }
+  }),
+
+]).then(function (results) {
+  console.log(results[0]);
+  console.log(results[1]);
+});
+```
+
+利用axios.defaults方法就相当于把多个axios的baseURL提出来了而已，前提是这些axios的baseURL必须一样。同样的，利用axios.defaults还可以修改headers等配置参数。
+
