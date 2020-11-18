@@ -12,78 +12,24 @@ new Vue({
   render: h => h(App)
 });
 
-// 基本使用
-/*axios({
-  // 请求的url
-  url: 'https://car.blctek.com:8443/v0/loc/川A.1234B',
-  // 请求的方式（默认是GET）
-  method: 'GET',
-  // 请求的参数
-  params: {
+// 将request.js里的request函数导入
+import {request1,request2} from "./network/request";
 
-  }
+// 使用request函数
+request1({
+  url: '/川A.1234B'
 }).then(function (res) {
-  /!*成功后的回调函数*!/
   console.log(res);
-}).catch(function (res) {
-  /!*失败后的回调函数*!/
-});*/
-
-/*// 利用axios.defaults来配置相关默认配置（全局配置）
-axios.defaults.baseURL='https://car.blctek.com:8443';
-
-// 并发请求
-axios.all([
-
-  axios({
-    url: '/v0/loc/川A.1234B',
-    method: 'GET',
-    params: {
-
-    }
-  }),
-
-  axios({
-    url: '/v0/loc/川A.1234B/2020-09-28',
-    method: 'GET',
-    params: {
-
-    }
-  })
-
-]).then(function (results) {
-  console.log(results[0]);
-  console.log(results[1]);
-});*/
-
-
-
-
-
-axios.all([
-
-  axios({
-    baseURL: 'https://car.blctek.com:8443',
-    url: '/v0/loc/川A.1234B',
-    method: 'GET',
-    params: {
-
-    }
-  }),
-
-  axios({
-    baseURL: 'https://car.blctek.com:8443',
-    url: '/v0/loc/川A.1234B/2020-09-28',
-    method: 'GET',
-    params: {
-
-    }
-  }),
-
-]).then(function (results) {
-  console.log(results[0]);
-  console.log(results[1]);
+}).catch(function (err) {
+  console.log(err);
 });
 
+request2({
+  url: '/2020-09-27'
+}).then(function (res) {
+  console.log(res);
+}).catch(function (err) {
+  console.log(err);
+});
 
 
