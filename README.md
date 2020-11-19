@@ -1,4 +1,4 @@
-# Vue.js从零开始
+Vue.js从零开始
 
 ## 1、简单认识Vue.js
 
@@ -191,7 +191,7 @@ VM（ViewModel，Model层和View层的桥梁）：负责监听M然后对V进行�
 
 **红线标注的都是执行到对应的生命周期的时候会调用的生命周期钩子函数**
 
-![](E:\吴青珂\大三\JavaEE\笔记\vue\lifecycle.png)
+![](./screenshot/lifecycle.png)
 
 ## 8、Vue.js的插值操作
 
@@ -250,7 +250,7 @@ VM（ViewModel，Model层和View层的桥梁）：负责监听M然后对V进行�
 
 运行结果：
 
-![image-20200901125619657](E:\吴青珂\大三\JavaEE\笔记\vue\image-20200901125619657.png)
+![image-20200901125619657](./screenshot/image-20200901125619657.png)
 
 可以看到没有加上v-html指令的标签内显示的内容就是纯字符串，加上了v-html指令的标签内显示的内容就是经过解析过后的富文本
 
@@ -281,7 +281,7 @@ VM（ViewModel，Model层和View层的桥梁）：负责监听M然后对V进行�
 
 运行结果：
 
-![image-20200901130325498](E:\吴青珂\大三\JavaEE\笔记\vue\image-20200901130325498.png)
+![image-20200901130325498](./screenshot/image-20200901130325498.png)
 
 可以观察到运行结果，如果直接使用Mustache语法（`{{}}`双大括号）可以直接在标签内里进行拼接字符串，但是如果使用了v-text指令后会直接将标签里的内容覆盖掉，但是同时也可以在v-text指令里使用+号进行拼接。
 
@@ -310,7 +310,7 @@ VM（ViewModel，Model层和View层的桥梁）：负责监听M然后对V进行�
 
 运行结果：
 
-![image-20200901130830323](E:\吴青珂\大三\JavaEE\笔记\vue\image-20200901130830323.png)
+![image-20200901130830323](./screenshot/image-20200901130830323.png)
 
 v-pre就是实打实的显示标签内的内容而不经过解析。
 
@@ -2426,7 +2426,7 @@ ES6规范是直接支持模块化开发的，而不用像CommonJS一样还需要
 
 就感觉上相当于模块中利用export把变量、函数、类导入到一个池中，然后再在需要的模块里利用import来导入。
 
-![image-20201010174013475](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201010174013475.png)
+![image-20201010174013475](./screenshot/image-20201010174013475.png)
 
 ## 41、ES6模块化开发导出和导入的几种方式
 
@@ -2624,11 +2624,11 @@ vue init webpack vue-test
 
 就可以创建一个名为vue-test的vue项目了
 
-![image-20201020182552291](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201020182552291.png)
+![image-20201020182552291](./screenshot/image-20201020182552291.png)
 
 打开我们刚刚新建好的项目我们可以看到vue2.x的目录结构如下：
 
-![image-20201021152508040](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201021152508040.png)
+![image-20201021152508040](./screenshot/image-20201021152508040.png)
 
 ## 46、vue cli构建方式runtime-compiler和runtime-only的区别
 
@@ -2677,11 +2677,11 @@ vue create 项目名称
 
 然后就可以看到依旧是在创建项目前需要选择的选项：
 
-![image-20201021182647310](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201021182647310.png)
+![image-20201021182647310](./screenshot/image-20201021182647310.png)
 
 利用vue-cli3创建完项目后可以发现与之前的项目结构目录有所不同：
 
-![image-20201022122952874](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201022122952874.png)
+![image-20201022122952874](./screenshot/image-20201022122952874.png)
 
 利用vue-cli3创建的项目比vue-cli2简化了许多。并且因为vue-cli3支持GUI，所以我们可以直接在全局终端输入：
 
@@ -2691,7 +2691,7 @@ vue ui
 
 从而直接打开vue-cli3自带的可视化项目管理界面：
 
-![image-20201022143124750](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201022143124750.png)
+![image-20201022143124750](./screenshot/image-20201022143124750.png)
 
 你可以直接在网页里管理项目的插件和依赖以及项目的相关配置，甚至还可以直接启动项目。
 
@@ -2901,7 +2901,7 @@ new Vue({
 
    router-view就是表示这个组件将在这里显示，有点类似html的iframe
 
-   ![image-20201023123710668](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201023123710668.png)
+   ![image-20201023123710668](./screenshot/image-20201023123710668.png)
 
 ## 52、利用路由修改网站主页
 
@@ -2932,7 +2932,7 @@ new Vue({
 
 ## 53、将url的显示模式从hash模式修改到history模式
 
-![image-20201025161403190](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201025161403190.png)
+![image-20201025161403190](./screenshot/image-20201025161403190.png)
 
 可以看到vue-router的url默认显示模式是采用的hash显示格式，很显然这不符合我们的常规，所以，我们可以在routes里配置一个mode，将它的默认修改为`history`，像这样：
 
@@ -3493,7 +3493,7 @@ export default new VueRouter({
 
 而我们就可以利用`this.$route.params`或者`this.$route.query`来获得跳转过程中的参数。因为router只负责跳转，跳转完后就失效了，参数都是直接存到各个route路由中。
 
-![image-20201103182447091](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201103182447091.png)
+![image-20201103182447091](./screenshot/image-20201103182447091.png)
 
 所以，涉及到跳转页面相关的就使用router，涉及到跳转后需要使用参数的就是用route。
 
@@ -3784,7 +3784,7 @@ Mutations：对状态信息的操作。
 
 同时Vuex的亮点就是可以devtools来跟踪Mutations的操作。假如组件多了之后，你根本无法知道到底是哪一个组件对这个变量进行了操作，所以vue开发了devtools这样一个浏览器插件，来使得我们开发人员更加容易观察到mutations里的函数对state里的变量的操作情况。
 
-![image-20201112161649019](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201112161649019.png)
+![image-20201112161649019](./screenshot/image-20201112161649019.png)
 
 其实本来操作函数可以同获取state里全局变量一样使用：
 
@@ -3805,7 +3805,7 @@ devtools是vue开发的一款浏览器插件，方便对vuex里commit提交的�
 
 ### 需要chrome插件商店进行安装
 
-![image-20201112163902205](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201112163902205.png)
+![image-20201112163902205](./screenshot/image-20201112163902205.png)
 
 ## 69、store中的getters
 
@@ -4097,7 +4097,7 @@ const moduleA={
 
 这里特殊的原因是因为在vue内部里是将根state和模块里state归并在一起的，但是模块里的state又是属于moduleA里的：
 
-![image-20201115233448699](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201115233448699.png)
+![image-20201115233448699](./screenshot/image-20201115233448699.png)
 
 观察到counter和moduleA是并列的，name又是属于moduleA的，所以需要使用`$store.state.moduleA.name`。
 
@@ -4246,7 +4246,7 @@ const moduleA={
 
 在store的index.js因为actions、mutations、getters、modules这些混在一起导致看起来非常的冗余，所以我们可以尝试将它们抽离出去（state不建议抽离）。所以我们需要新建actions.js、mutations.js、getters.js，modules的话就新建一个文件夹：
 
-![image-20201116121658512](E:\吴青珂\大三\JavaEE\笔记\vue\image-20201116121658512.png)
+![image-20201116121658512](./screenshot/image-20201116121658512.png)
 
 分别将index.js里的actions、getters、mutations抽离出来，然后再导出，再在index.js里导入：
 
@@ -4550,7 +4550,7 @@ axios.all([
 });
 ```
 
-## 82、axios的配置信息
+## 82、axios的配置信息config
 
 其实在axiox()需要的对象参数是一个config参数，意思就是需要给axios传递配置信息，常见的axios的配置信息如下：
 
@@ -4675,4 +4675,282 @@ axios.all([
 ```
 
 利用axios.defaults方法就相当于把多个axios的baseURL提出来了而已，前提是这些axios的baseURL必须一样。同样的，利用axios.defaults还可以修改headers等配置参数。
+
+## 83、axios的实例
+
+由于刚才使用的axios.defaults方法将baseURL和timeout写进了defaults里面，意味着整个页面的所有的axios请求都必须使用axios.defaults里的baseURL和timeout，但是一般在真实开发中的网络请求的baseURL很可能不止一个，所以我们就需要有多组baseURL以及对应的timeout，所以这个时候就需要利用axios的实例来创建一组网络请求，这组网络请求里都是用这组设置好的baseURL和timeout：
+
+```js
+// 创建axios实例axiosInstance1
+let axiosInstance1 = axios.create({
+  baseURL: 'https://www.baidu.com',
+  timeout: 5000
+});
+
+// 创建axios实例axiosInstance2
+let axiosInstance2 = axios.create({
+  baseURL: 'https://www.google.com',
+  timeout: 10000
+});
+
+// 利用axiosInstance1实例发起请求
+axiosInstance1().then().catch();
+
+//利用axiosInstance2实例发起请求
+axiosInstance2().then().catch();
+```
+
+先分别利用axios.create()方法创建一个axios实例，然后给这个axios实例里传递这个实例所需要的统一参数，然后再分别利用该实例发起请求：
+
+```js
+// 利用axiosInstance1实例发起请求
+axiosInstance1({
+  url: 'api1'
+}).then(function (res) {
+  console.log(res);
+}).catch(function (err) {
+  console.log(err)
+});
+
+//利用axiosInstance2实例发起请求
+axiosInstance2({
+  url: 'api2'
+}).then(function (res) {
+  console.log(res);
+}).catch(function (err) {
+  console.log(err)
+});
+```
+
+分别向自己的实例里传递url、params、data参数然后初始化好自己的then和catch的处理就可以了。
+
+## 84、axios实例的封装以及复用
+
+如果就以普通的axios使用不加以封装的话每个组件里需要用到axios的地方都需要重新导入axios并且创建属于该组件的axios实例，这是不方便的，代码冗余，我们可以创建一个公共的axios实例来供组件使用。在src下创建一个文件夹叫network，然后创建一个request.js在里面实现网络请求的封装。
+
+```js
+// 导入axios
+import Axios from "axios";
+
+// axios请求（config：请求参数，success：成功的回调函数，error：失败的回调函数）
+function request(config,success,error){
+  let axiosInstance = Axios.create({
+    baseURL: 'http://www.baidu.com',
+    timeout: 5000
+  });
+
+  axiosInstance(
+    config
+  ).then(function (res) {
+    // 利用传递进来的success函数执行res并且回调出去
+    success(res);
+  }).catch(function (err) {
+    // 利用传递进来的error函数执行err并且回调出去
+    error(err);
+  });
+}
+
+
+// 导出request函数
+export {
+  request,
+};
+```
+
+第一步我们需要先导入axios，才能使用axios这个框架。
+
+第二步需要实例化axios的组件，然后利用组件使用config、success、error分别进行请求配置、成功的回调、失败的回调。注意的是我们需要利用函数来将它们包裹起来，这样才可以在外部使用模块里的东西时才能向模块里传递参数。
+
+第三步导出这个模块导出，并且导出request函数。
+
+在需要使用网络请求这个模块里导入：
+
+```js
+// 将request.js里的request函数导入
+import {request} from "./network/request";
+
+// 使用request函数（将config，success，error分别传递进去）
+request({
+  url: '/api'
+},function (res) {
+  console.log(res);
+},function (err) {
+  console.log(err);
+});
+```
+
+使用request函数将config、success、error都传递进去。
+
+实质上，axios是基于promise的，所以我们可以利用一种更加美观的方式：
+
+```js
+// axios请求（config：请求参数，success：成功的回调函数，error：失败的回调函数）
+function request(config){
+  let axiosInstance = Axios.create({
+    baseURL: 'http://www.baidu.com',
+    timeout: 5000
+  });
+
+  return axiosInstance(config);
+}
+```
+
+直接返回axiosInstance()这个对象就行了，因为它本身就是一个promise。然后在外部添加上then和catch就行了：
+
+```js
+// 使用request函数
+request({
+  url: '/川A.1234B'
+}).then(function (res) {
+  console.log(res);
+}).catch(function (err) {
+  console.log(err);
+})
+```
+
+最终，我们就利用axios是基于promise的特性完成了对axios实例最优美的封装：
+
+```js
+// 导入axios
+import Axios from "axios";
+
+// axios请求1
+function request1(config){
+  // 配置baseURL和timeout等配置信息
+  let axiosInstance = Axios.create({
+    baseURL: 'http://www.baidu.com',
+    timeout: 5000
+  });
+  // 将axios实例直接返回（因为它本身就是个promise）
+  return axiosInstance(config);
+}
+
+// 导出request函数
+export {
+  request1
+};
+```
+
+步骤：
+
+1. 导入axios框架
+2. 编写函数（目的是为了在外部使用的时候能够向里面传递config参数）
+3. 利用axios的create方法创建axios实例，并且配置好该实例的基本配置，如baseURL、timeout、headers
+4. 直接将axios实例作为返回值返回（因为axios实质上就是一个promise，可以丢给外部让外部来写then和catch）
+5. 最后将这个函数导出
+
+## 85、axios实例的复用
+
+因为我们配置多个axios实例的目的就是为了能配置多个baseURL等相关基本配置，所以我们可以多建立几个函数来配置不同的baseURL等相关配置：
+
+```js
+// 导入axios
+import Axios from "axios";
+
+// axios请求1
+function request1(config){
+  // 配置baseURL和timeout等配置信息
+  let axiosInstance = Axios.create({
+    baseURL: 'http://wwww.baidu.com',
+    timeout: 5000
+  });
+  // 将axios实例直接返回（因为它本身就是个promise）
+  return axiosInstance(config);
+}
+
+// axios请求2
+function request2(config){
+  // 配置baseURL和timeout等配置信息
+  let axiosInstance = Axios.create({
+    baseURL: 'http://www.google.com',
+    timeout: 10000
+  });
+  // 将axios实例直接返回（因为它本身就是个promise）
+  return axiosInstance(config);
+}
+
+// 导出request函数
+export {
+  request1,
+  request2
+};
+```
+
+并且将它们分别导出。这里配置了两个函数，两个实例里分别配置了不同的baseURL和timeout。在需要使用的组件直接将它们导入：
+
+```js
+// 将request.js里的request函数导入
+import {request1,request2} from "./network/request";
+
+// 使用request函数
+request1({
+  url: '/api1'
+}).then(function (res) {
+  console.log(res);
+}).catch(function (err) {
+  console.log(err);
+});
+
+request2({
+  url: '/api2'
+}).then(function (res) {
+  console.log(res);
+}).catch(function (err) {
+  console.log(err);
+});
+```
+
+利用import将它们分别导入，然后再利用request1和request2两个函数来分别使用两个不同的baseURL和timeout来发送请求了。
+
+通常项目中可能会用到2-3个baseURL，所以我们只需要配置2-3个函数，然后在外部需要使用axios网络请求的地方直接利用请求需要的那个网络请求的实例就可以了。
+
+## 86、axios拦截器
+
+axios有两个Interceptor（拦截器），一个是request（请求）拦截器；另一个是response（响应）拦截器。
+
+![image-20201119162924231](./screenshot/image-20201119162924231.png)request拦截器：
+
+```js
+  // 利用interceptors.request.use()方法开启request请求拦截器
+  axiosInstance.interceptors.request.use(
+    function (config) {
+      // request请求发起前进行的操作（一般是对config进行操作）
+      console.log(config);
+      console.log('interceptors.request-->onFulfilled');
+      // 因为requset1这个函数是链式编程，所以一定要将config返回出去
+      return config;
+    },function (err) {
+      console.log(err);
+    }
+  );
+```
+
+利用interceptors.request.use()方法开启request的拦截器，use方法需要两个参数：onFulfilled函数和onRejected函数（实际上就是拦截成功和拦截失败的函数）。request拦截的实质就是在axios的request请求发起前对axios这个请求的conifg可以允许进行一层封装，比如加上额外的headers或者加上特定的携带信息给后端。
+
+**Tips：**一定要记得将config返回出去。
+
+response拦截器：
+
+```js
+  // 利用利用interceptors.response.use()方法开启response响应拦截器
+  axiosInstance.interceptors.response.use(
+    function (res) {
+      // 一般从服务器里返回的数据由于axios的封装会返回status和headers头
+      // 我们可以利用response拦截器过滤掉它们
+      console.log(res);
+      console.log('interceptors.response-->onFulfilled');
+      // 因为我们不需要其他的响应头，所以我们可以只返回res里的data
+      return res.data;
+    },
+    function (err) {
+      console.log(err);
+    }
+  );
+```
+
+由于axios的封装，一般请求的响应response里都会携带一些可能无关的信息，比如：
+
+![image-20201119163850309](./screenshot/image-20201119163850309.png)
+
+只有data才是我们只能从后端获取到的数据，所以我们就可以利用response拦截器只将data返回，而将其他无用的信息过滤掉了。
 
