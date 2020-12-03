@@ -1,4 +1,5 @@
 <template><!-- TabBarItem模板 -->
+
   <div class="tab-bar-item" @click="itemClick">
 
     <!-- 图片 -->
@@ -15,6 +16,7 @@
     </div>
 
   </div>
+
 </template>
 
 <script>

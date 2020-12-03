@@ -4,21 +4,20 @@
     <!-- 显示内容 -->
     <router-view></router-view>
 
-    <!-- 底下导航栏 -->
-    <tab-bar></tab-bar>
-
+    <!-- 底下tabber -->
+    <main-tab-bar></main-tab-bar>
   </div>
 </template>
 
 <script>
 
-// 导入TabBar
-import TabBar from "./components/tabber/TabBar";
+// 导入MainTabBar
+import MainTabBar from "./components/content/MainTabBar";
 
 export default {
   name: 'App',
   components:{
-    TabBar
+    MainTabBar
   }
 }
 </script>
