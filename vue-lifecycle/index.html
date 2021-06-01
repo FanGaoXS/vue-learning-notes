@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+
+<div id="app">
+  <h2>{{message}}</h2>
+  <button @click="handleChangeMessageButton()">change message</button>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  let app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Hello,Vue.js!',
+    },
+    beforeCreate(){
+      const lifeCycleName = 'beforeCreate'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)            //undefined
+      console.log('data->',this.$data)        //undefined
+      console.log('message->',this.message)   //undefined
+      console.log('------------------------------------------------')
+    },
+    created(){
+      const lifeCycleName = 'created'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)            //undefined
+      console.log('data->',this.$data)        //已被初始化
+      console.log('message->',this.message)   //已被初始化
+      console.log('------------------------------------------------')
+    },
+    beforeMount(){
+      const lifeCycleName = 'beforeMount'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)            //已被初始化，但还未挂载数据
+      console.log('data->',this.$data)        //已被初始化
+      console.log('message->',this.message)   //已被初始化
+      console.log('------------------------------------------------')
+    },
+    mounted(){
+      const lifeCycleName = 'mounted'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)            //已被初始化，且数据也挂载
+      console.log('data->',this.$data)        //已被初始化
+      console.log('message->',this.message)   //已被初始化
+      console.log('------------------------------------------------')
+    },
+    beforeUpdate(){
+      const lifeCycleName = 'beforeUpdate'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)
+      console.log('data->',this.$data)
+      console.log('message->',this.message)
+      console.log('------------------------------------------------')
+    },
+    updated(){
+      const lifeCycleName = 'updated'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)
+      console.log('data->',this.$data)
+      console.log('message->',this.message)
+      console.log('------------------------------------------------')
+    },
+    beforeDestroy(){
+      const lifeCycleName = 'beforeDestroy'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)
+      console.log('data->',this.$data)
+      console.log('message->',this.message)
+      console.log('------------------------------------------------')
+    },
+    destroyed(){
+      const lifeCycleName = 'destroyed'
+      console.log(lifeCycleName + '生命周期回调-------------------------')
+      console.log('el->',this.$el)
+      console.log('data->',this.$data)
+      console.log('message->',this.message)
+      console.log('------------------------------------------------')
+    },
+    methods: {
+      handleChangeMessageButton() {
+        this.message = 'Hello,Vue2.X!'
+      }
+    },
+  });
+</script>
+
+</body>
+</html>
